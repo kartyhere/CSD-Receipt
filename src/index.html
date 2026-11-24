@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none';">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CSD Receipt</title>
+  <link rel="stylesheet" href="sheet.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="booting">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand"><img src="icon.png" alt="" width="40" height="40"><div><strong>CSD Receipt</strong><small>PO number, SR number and PO date</small></div></div>
+      <nav aria-label="Sections">
+        <button class="nav-button active" type="button" data-view="print" aria-keyshortcuts="Alt+1">Print</button>
+        <button class="nav-button" type="button" data-view="printed" aria-keyshortcuts="Alt+2">Printed <b id="printedBadge" class="badge">0</b></button>
+      </nav>
+      <div class="sidebar-note"><strong>Saved on this computer</strong><span>The GST number, the last PO date and the printer are remembered here. Every print is listed under Printed.</span><span id="versionNote" class="version"></span></div>
+    </aside>
+    <main>
+      <header class="topbar">
+        <div><p class="eyebrow">CSD RECEIPT</p><h1 id="pageTitle">Print</h1></div>
+        <div class="key-hint"><kbd>Enter</kbd> next box · <kbd>Ctrl</kbd>+<kbd>P</kbd> print · <kbd>Alt</kbd>+<kbd>1</kbd>/<kbd>2</kbd> sections</div>
+      </header>
+      <div id="toast" class="toast" role="status" aria-live="polite"></div>
+      <p id="fontWarning" class="font-warning" role="alert" hidden></p>
+
+      <section id="print" class="view active">
+        <div class="grid">
+          <form id="csdForm" class="panel form" autocomplete="off" novalidate>
+            <div class="panel-heading"><p class="eyebrow">DETAILS ON THE PAGE</p><h2>Type the numbers, then print</h2></div>
+            <label>GST number
+              <span class="row"><input id="gstInput" type="password" maxlength="15" spellcheck="false" autocomplete="off" aria-describedby="gstNote"><button id="gstShow" class="button secondary" type="button" aria-pressed="false">Show</button></span>
+              <small id="gstNote">15 letters and digits. Remembered on this computer and printed on the first line. Leave empty for no GST line.</small>
+            </label>
+            <label>PO Num<input id="poInput" type="text" maxlength="30" spellcheck="false" inputmode="numeric" required></label>
+            <label>SR Num<input id="srInput" type="text" maxlength="30" spellcheck="false" inputmode="numeric" required></label>
+            <label>PO Date<span class="row"><input id="dateInput" type="date" required><b id="dateShown" class="date-shown"></b></span></label>
+            <p id="formError" class="error" role="alert"></p>
+            <div class="actions"><button id="printOpen" class="button primary" type="submit">Print…</button></div>
+          </form>
+          <article class="panel preview">
+            <div class="panel-heading"><p class="eyebrow">TOP OF THE PAGE, ACTUAL LAYOUT</p><h2>Preview</h2></div>
+            <div class="strip" id="stripBox"><div class="csd-sheet" id="stripSheet"></div></div>
+            <p class="muted">A4, Courier New bold: GST line 14 pt, the other lines 11 pt, ending on the right margin (0.5 inch).</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="printed" class="view">
+        <article class="panel">
+          <div class="panel-heading"><p class="eyebrow">PRINTED ON THIS COMPUTER</p><h2>Printed</h2></div>
+          <p class="muted"><kbd>↑</kbd><kbd>↓</kbd> choose, <kbd>Enter</kbd> puts the numbers back in the form to print again.</p>
+          <div id="printedBody" class="printed" tabindex="0" aria-label="Printed list. Up and Down choose, Enter puts the numbers back in the form"></div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="printDialog" aria-labelledby="printTitle">
+    <form method="dialog" id="printDialogForm">
+      <div class="dialog-heading"><div><p class="eyebrow">CHECK BEFORE PRINTING</p><h2 id="printTitle">Print preview</h2></div><button class="dialog-close" type="button" id="printClose" aria-label="Close">×</button></div>
+      <div class="dialog-body">
+        <div class="page-box" id="pageBox"><div class="csd-sheet" id="pageSheet"></div></div>
+        <div class="dialog-side">
+          <div class="facts" id="printFacts"></div>
+          <label>Copies<input id="copiesInput" autofocus type="number" min="1" max="99" step="1" value="1" required></label>
+          <label>Printer<select id="printerSelect"></select></label>
+          <p id="printError" class="error" role="alert"></p>
+          <div class="key-hint"><kbd>Enter</kbd> print <kbd>Esc</kbd> back to the form</div>
+          <div class="dialog-actions">
+            <button type="button" class="button secondary" id="printCancel">Back</button>
+            <button type="button" class="button secondary" id="pdfSave">Save PDF</button>
+            <button type="button" class="button primary" id="printGo">Print</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="layout.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

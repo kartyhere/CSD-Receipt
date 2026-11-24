@@ -1,0 +1,84 @@
+/* CSD Receipt window. Light or dark follows Windows. The printed page itself is styled only by sheet.css. */
+:root{--bg:#f4f6f5;--panel:#ffffff;--text:#13201b;--muted:#5d6b66;--line:#d6ddda;--brand:#0e3b2e;--accent:#2a7a5b;--accent-text:#ffffff;--danger:#b3261e;--sel:rgba(42,122,91,.14);--field:#ffffff;
+  font-family:"Segoe UI",Inter,Arial,sans-serif;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--bg:#111614;--panel:#18201d;--text:#eef3f1;--muted:#9aaba4;--line:#2c3934;--brand:#7fd1ae;--accent:#3f9c77;--accent-text:#06120d;--danger:#ff8a80;--sel:rgba(127,209,174,.16);--field:#0f1412}}
+*{box-sizing:border-box}
+.booting>*{visibility:hidden}
+[hidden]{display:none!important}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}
+button,input,select{font:inherit;color:inherit}
+h1,h2,p{margin-top:0}
+h1{margin:0;font-size:28px;letter-spacing:-.02em}
+h2{margin:0;font-size:17px}
+.eyebrow{margin:0 0 4px;color:var(--accent);font-size:11px;font-weight:800;letter-spacing:.14em}
+.muted,small{color:var(--muted)}
+kbd{display:inline-block;min-width:20px;padding:1px 5px;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;font:12px/1.4 "Segoe UI",Arial,sans-serif;text-align:center;color:var(--text);background:var(--panel)}
+.shell{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:100vh}
+.sidebar{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:18px;padding:22px 14px;border-right:1px solid var(--line);background:var(--panel)}
+.brand{display:flex;gap:10px;align-items:center;padding:0 6px 16px;border-bottom:1px solid var(--line)}
+.brand strong,.brand small{display:block}
+.brand small{font-size:11px;margin-top:2px}
+nav{display:grid;gap:6px}
+.nav-button{display:flex;align-items:center;justify-content:space-between;min-height:42px;padding:10px 12px;border:1px solid transparent;border-radius:10px;background:transparent;text-align:left;cursor:pointer;font-weight:600}
+.nav-button:hover{border-color:var(--line)}
+.nav-button.active{background:var(--sel);border-color:var(--accent);box-shadow:inset 3px 0 var(--accent)}
+.nav-button:focus-visible,.button:focus-visible,input:focus-visible,select:focus-visible,.printed:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.badge{min-width:24px;padding:1px 7px;border-radius:999px;background:var(--line);font-size:12px;text-align:center}
+.sidebar-note{margin-top:auto;padding:14px 6px 0;border-top:1px solid var(--line);font-size:12px;line-height:1.5}
+.sidebar-note strong,.sidebar-note span{display:block}
+.sidebar-note span{color:var(--muted);margin-top:5px}
+.version{font-size:11px}
+main{min-width:0;padding:20px 28px 40px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:18px;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+.key-hint{color:var(--muted);font-size:12px}
+.view{display:none}.view.active{display:block}
+.panel{padding:18px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+.panel-heading{margin-bottom:14px}
+.grid{display:grid;grid-template-columns:minmax(320px,420px) minmax(0,1fr);gap:18px;align-items:start}
+.form{display:grid;gap:14px}
+label{display:grid;gap:6px;font-size:12px;font-weight:700}
+input,select{height:44px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:var(--field)}
+.form input{font-family:"Courier New",monospace;font-size:17px;font-weight:700}
+.row{display:flex;gap:8px;align-items:center}
+.row input{flex:1;min-width:0}
+.row input[type=date]{flex:0 0 190px}
+.date-shown{font-family:"Courier New",monospace;font-size:17px}
+.form small{font-weight:400;line-height:1.45}
+.error{min-height:1.2em;margin:0;color:var(--danger);font-weight:700;font-size:13px}
+.actions,.dialog-actions{display:flex;gap:8px;justify-content:flex-start;flex-wrap:wrap}
+.dialog-actions{justify-content:flex-end}
+.button{min-height:42px;padding:0 18px;border:1px solid var(--line);border-radius:10px;background:var(--panel);font-weight:700;cursor:pointer}
+.button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-text)}
+.button:disabled{opacity:.55;cursor:default}
+.font-warning{margin:0 0 14px;padding:12px 14px;border:1px solid var(--danger);border-left-width:4px;border-radius:10px;font-weight:700;color:var(--danger)}
+.toast{position:fixed;right:22px;bottom:22px;max-width:460px;padding:12px 16px;border:1px solid var(--line);border-radius:12px;background:var(--panel);box-shadow:0 6px 24px rgba(0,0,0,.18);opacity:0;transform:translateY(8px);transition:.18s;pointer-events:none;z-index:5}
+.toast.show{opacity:1;transform:none}
+.toast.error{border-color:var(--danger);color:var(--danger)}
+/* The sheet keeps its real size in points and is scaled into its box, so the preview has the printed proportions. */
+.strip,.page-box{position:relative;overflow:hidden;background:#fff;border:1px solid #9aa9a3;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.strip{width:100%;margin:6px 0 10px}
+.strip .csd-sheet,.page-box .csd-sheet{position:absolute;top:0;left:0;transform-origin:0 0}
+dialog{width:min(1000px,calc(100vw - 40px));max-height:calc(100vh - 30px);padding:0;border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:14px;background:var(--panel);color:var(--text)}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+dialog form{display:grid;gap:12px;padding:22px}
+.dialog-heading{display:flex;justify-content:space-between;gap:16px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.dialog-close{width:34px;height:34px;border:1px solid var(--line);border-radius:9px;background:transparent;font-size:20px;cursor:pointer}
+.dialog-body{display:grid;grid-template-columns:min(460px,48vw) minmax(240px,1fr);gap:20px;align-items:start}
+.page-box{width:100%}
+.dialog-side{display:grid;gap:12px}
+.dialog-side input,.dialog-side select{font-size:16px}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.facts div{display:grid;gap:2px;padding:8px 10px;border:1px solid var(--line);border-radius:10px}
+.facts span{font-size:11px;color:var(--muted)}
+.facts strong{font-family:"Courier New",monospace;font-size:15px;overflow-wrap:anywhere}
+.printed{outline:none}
+.data-table{width:100%;border-collapse:collapse}
+.data-table th,.data-table td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left}
+.data-table th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.data-table tbody tr{cursor:pointer}
+.data-table tbody tr.sel td{background:var(--sel)}
+.data-table tbody tr.sel td:first-child{box-shadow:inset 3px 0 var(--accent)}
+.empty{padding:28px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);text-align:center}
+.empty strong{display:block;color:var(--text);margin-bottom:4px}
+/* The page preview stays black on white like the paper. */
+.csd-sheet,.csd-sheet .csd-line{color:#000}

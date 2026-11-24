@@ -1,0 +1,8 @@
+/* CSD Print page. The font must be Courier New: the app checks the printed page and refuses to print in any other font. Sizes in points, exactly as in CSD_DATE.docx. Used by the preview and inlined into the printed page. */
+.csd-sheet{position:relative;box-sizing:border-box;width:595.28pt;height:841.89pt;padding:36pt;background:#fff;color:#000;overflow:hidden;
+  font-family:"Courier New",monospace;font-weight:700;font-kerning:none;font-variant-ligatures:none;letter-spacing:0;word-spacing:0;-webkit-font-smoothing:antialiased}
+/* Single line spacing in Word for Courier New = ascent 0.8325 em + descent 0.3003 em = 1.1328 em, no space after. */
+.csd-line{margin:0;padding:0;white-space:pre;line-height:1.1328;min-height:1.1328em}
+.csd-gst{font-size:14pt;text-indent:36pt;text-align:left}
+.csd-r{font-size:11pt;text-align:right}
+.csd-tab{display:inline-block;height:1px}

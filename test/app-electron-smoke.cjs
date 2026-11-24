@@ -10,6 +10,7 @@ const out = process.env.CSD_OUT || fs.mkdtempSync(path.join(os.tmpdir(), 'csdr-o
 for (const f of fs.readdirSync(out)) if (f.endsWith('.pdf') || f.endsWith('.png')) fs.rmSync(path.join(out, f));
 process.env.CSDRECEIPT_TEST_PDF_DIR = out;
 // This Linux test machine has no Courier New: Liberation Mono (same widths) stands in, and the font check expects it.
+process.env.CSDRECEIPT_TEST_NO_PRINTERS = '1'; // like Karthik's PC: Electron's list comes back empty
 process.env.CSDRECEIPT_TEST_FONT = 'Liberation Mono'; process.env.CSDRECEIPT_TEST_FONT_PS = 'LiberationMono';
 app.setPath('userData', profile);
 const errors = [];
@@ -50,6 +51,10 @@ const GST = '32ZZZPZ0000Z1Z0'; // obviously fake
   assert.equal(await active(), 'copiesInput');
   assert.match(await js(`document.getElementById('printFacts').innerText`), /70289[^]*53931[^]*22-SEP-26[^]*32\*{11}Z0/);
   assert.equal(await js(`document.querySelectorAll('#pageSheet .csd-line').length`), 4);
+  // No printer listed: "Windows print dialog…" is chosen and the note says why.
+  await waitFor(() => js(`document.getElementById('printerSelect').options.length > 0`));
+  assert.deepEqual(await js(`[...document.getElementById('printerSelect').options].map(o=>o.text)`), ['Windows print dialog…']);
+  assert.match(await js(`document.getElementById('printerNote').textContent`), /Windows print dialog will open/);
   await shot('c2-dialog');
   // Esc goes back without printing.
   key('Escape'); await waitFor(async () => !(await open()));
@@ -65,7 +70,7 @@ const GST = '32ZZZPZ0000Z1Z0'; // obviously fake
   key('P', ['control']); await waitFor(open); await wait(200);
   await js(`document.getElementById('copiesInput').select()`); await type('2'); key('Return');
   await waitFor(async () => !(await open()));
-  const pdfs = fs.readdirSync(out).filter((f) => f.startsWith('print-')); assert.equal(pdfs.length, 1); assert.match(pdfs[0], /-2\.pdf$/);
+  const pdfs = fs.readdirSync(out).filter((f) => f.startsWith('print-')); assert.equal(pdfs.length, 1); assert.match(pdfs[0], /-2-dialog\.pdf$/);
   const pdf = fs.readFileSync(path.join(out, pdfs[0])).toString('latin1');
   assert.match(pdf, /\/MediaBox \[0 0 59[45]\.\d+ 84[12]\.\d+\]/);                                     // A4
   assert.match(pdf, /\/Title \(CSD print\)/); assert.ok(!pdf.includes('ZZZPZ'), 'no GST number in the PDF details');

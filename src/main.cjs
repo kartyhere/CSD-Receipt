@@ -4,6 +4,7 @@
 // Settings and the list of prints are kept in the user's app-data folder, sealed with Windows' own protection
 // (Electron safeStorage) when it is available. The GST number is never written to the list of prints.
 const { app, BrowserWindow, dialog, ipcMain, safeStorage, session, shell } = require('electron');
+const { execFile } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
@@ -18,6 +19,8 @@ const PAGE = pathToFileURL(path.join(__dirname, 'index.html')).href;
 const testHook = (name) => (app.isPackaged ? '' : String(process.env[name] || ''));
 const sheetCss = () => { const f = testHook('CSDRECEIPT_TEST_FONT'); return f ? SHEET_CSS.replace(/"Courier New"/g, `"${f.replace(/["\\]/g, '')}"`) : SHEET_CSS; };
 const wantedFont = () => testHook('CSDRECEIPT_TEST_FONT_PS') || 'CourierNew';
+// Printer list value meaning "open the Windows print dialog" (the way Invoice Clearing in BOH prints).
+const DIALOG = '__windows_dialog__';
 const FONT_MISSING = 'Courier New Bold is not installed on this computer, so nothing was printed. Install the Courier New font in Windows (Settings > Fonts) and try again.';
 
 let win = null; let data = null;
@@ -65,12 +68,34 @@ function remember(e, extra) {
 }
 const pdfOf = (wc) => wc.printToPDF({ printBackground: false, pageSize: 'A4', preferCSSPageSize: true, margins: { top: 0, bottom: 0, left: 0, right: 0 }, scale: 1 });
 async function withSheet(e, work) {
-  const sheet = new BrowserWindow({ show: false, width: 800, height: 1100, webPreferences: { sandbox: true, javascript: false, spellcheck: false, contextIsolation: true, nodeIntegration: false } });
+  const sheet = new BrowserWindow({ show: false, parent: win || undefined, width: 800, height: 1100, webPreferences: { sandbox: true, javascript: false, spellcheck: false, contextIsolation: true, nodeIntegration: false } });
   try {
     await sheet.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(Layout.pageHtml(e, sheetCss()))}`);
     if (!fontOk(await pdfOf(sheet.webContents), wantedFont())) throw new Error(FONT_MISSING);
     return await work(sheet.webContents);
   } finally { if (!sheet.isDestroyed()) sheet.destroy(); }
+}
+
+// ---- printers ----
+// Electron's own list first. On some computers it comes back empty although Windows has printers (the Windows print
+// dialog still shows them), so Windows is then asked directly. Names are the ones Windows prints to.
+function windowsPrinters() {
+  if (process.platform !== 'win32') return Promise.resolve([]);
+  const cmd = 'Get-CimInstance Win32_Printer | Select-Object Name,Default | ConvertTo-Json -Compress';
+  return new Promise((resolve) => execFile('powershell.exe', ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-Command', cmd], { windowsHide: true, timeout: 10000, maxBuffer: 1 << 20 }, (err, stdout) => {
+    if (err) return resolve([]);
+    try {
+      const raw = JSON.parse(String(stdout || '').trim() || '[]');
+      resolve((Array.isArray(raw) ? raw : [raw]).filter((x) => x && x.Name).map((x) => ({ name: String(x.Name), label: String(x.Name), isDefault: !!x.Default })));
+    } catch { resolve([]); }
+  }));
+}
+async function listPrinters() {
+  let list = [];
+  try { list = (await win.webContents.getPrintersAsync()).map((x) => ({ name: x.name, label: x.displayName || x.name, isDefault: !!x.isDefault })); } catch { list = []; }
+  if (!list.length) list = await windowsPrinters();
+  const seen = new Set();
+  return list.filter((x) => x.name && !seen.has(x.name) && seen.add(x.name)).slice(0, 100);
 }
 
 // ---- messages from the window: only from our own page in our own window ----
@@ -93,27 +118,34 @@ function registerHandlers() {
     try { await withSheet({ gst: '', po: '0', sr: '0', date: '2026-01-01' }, async () => true); return { ok: true }; }
     catch (err) { return { ok: false, message: String(err.message || err) }; }
   });
-  handle('csd:printers', async () => {
-    const list = await win.webContents.getPrintersAsync();
-    return list.map((x) => ({ name: x.name, label: x.displayName || x.name, isDefault: !!x.isDefault })).slice(0, 100);
-  });
+  handle('csd:printers', async () => ({ printers: testHook('CSDRECEIPT_TEST_NO_PRINTERS') ? [] : await listPrinters(), dialog: DIALOG }));
   // Prints without a second dialog: the copies and the printer were chosen in the window's own pop-up.
   handle('csd:print', async (p) => {
     const e = entry(p);
     const copies = Math.round(Number(p?.copies));
     if (!(copies >= 1 && copies <= 99)) throw new Error('Copies must be between 1 and 99.');
     const printer = String(p?.printer || '').slice(0, 200);
+    if (!printer) throw new Error('Choose a printer.');
     const testDir = testHook('CSDRECEIPT_TEST_PDF_DIR');
+    const viaDialog = printer === DIALOG;
     if (testDir) {
-      await withSheet(e, async (wc) => fs.writeFileSync(path.join(testDir, `print-${Date.now()}-${copies}.pdf`), await pdfOf(wc)));
+      await withSheet(e, async (wc) => fs.writeFileSync(path.join(testDir, `print-${Date.now()}-${copies}${viaDialog ? '-dialog' : ''}.pdf`), await pdfOf(wc)));
+    } else if (viaDialog) {
+      // The Windows print dialog, with the copies filled in; the user picks the printer there.
+      const result = await withSheet(e, (wc) => new Promise((resolve) => wc.print({
+        silent: false, copies, collate: true, printBackground: false, color: false,
+        pageSize: 'A4', margins: { marginType: 'none' }, scaleFactor: 100, landscape: false,
+      }, (ok, reason) => resolve({ ok, reason }))));
+      if (!result.ok) {
+        if (/cancel/i.test(String(result.reason || ''))) return { printed: false, cancelled: true };
+        throw new Error(`The page was not printed${result.reason ? ` (${String(result.reason).slice(0, 80)})` : ''}.`);
+      }
     } else {
-      const printers = await win.webContents.getPrintersAsync();
-      if (!printers.some((x) => x.name === printer)) throw new Error('Choose a printer.');
       const result = await withSheet(e, (wc) => new Promise((resolve) => wc.print({
         silent: true, deviceName: printer, copies, collate: true, printBackground: false, color: false,
         pageSize: 'A4', margins: { marginType: 'none' }, scaleFactor: 100, landscape: false,
       }, (ok, reason) => resolve({ ok, reason }))));
-      if (!result.ok) throw new Error(`The printer did not take the page${result.reason ? ` (${String(result.reason).slice(0, 80)})` : ''}.`);
+      if (!result.ok) throw new Error(`The printer did not take the page${result.reason ? ` (${String(result.reason).slice(0, 80)})` : ''}. Choose "Windows print dialog…" under Printer and try again.`);
     }
     load().printer = printer;
     return { printed: true, history: remember(e, { copies, how: 'Printed' }) };

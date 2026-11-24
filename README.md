@@ -6,7 +6,7 @@ A small Windows app that prints the GST number, PO number, SR number and PO date
 
 1. Type the GST number once. It is hidden on screen (Show / Hide) and remembered on this computer. Leave it empty for no GST line.
 2. Type **PO Num**, Enter, **SR Num**, Enter, and check **PO Date**. It prints as `22-SEP-26`.
-3. Enter on the date, or **Ctrl+P**, opens the print preview. It shows the whole A4 page as it will print, with **Copies** and **Printer** (the last one used, else the Windows default). **Enter** prints, **Esc** goes back, and **Save PDF** writes the same page.
+3. Enter on the date, or **Ctrl+P**, opens the print preview. It shows the whole A4 page as it will print, with **Copies** and **Printer** (the last one used, else the Windows default). If Windows lists no printer there, **Windows print dialog…** is chosen and the normal Windows dialog opens to pick one. **Enter** prints, **Esc** goes back, and **Save PDF** writes the same page.
 4. After printing, PO Num and SR Num are emptied and the cursor is back in PO Num. The date and GST number stay.
 5. **Printed** (Alt+2) lists every print. Up / Down and Enter put the numbers back in the form.
 

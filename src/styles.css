@@ -82,3 +82,5 @@ dialog form{display:grid;gap:12px;padding:22px}
 .empty strong{display:block;color:var(--text);margin-bottom:4px}
 /* The page preview stays black on white like the paper. */
 .csd-sheet,.csd-sheet .csd-line{color:#000}
+.printer-note{margin-top:-6px;line-height:1.45}
+.printer-note:empty{display:none}

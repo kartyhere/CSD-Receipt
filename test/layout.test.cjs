@@ -53,7 +53,13 @@ test('the printed page must be in Courier New Bold: the font is read back from t
 test('the app only takes messages from its own page, prints silently with the chosen copies, keeps no GST number in the list', () => {
   const m = read('src/main.cjs');
   assert.match(m, /event\.sender !== win\.webContents \|\| event\.senderFrame !== event\.sender\.mainFrame \|\| event\.senderFrame\.url !== PAGE/);
-  assert.match(m, /silent: true, deviceName: printer, copies/); assert.match(m, /margins: \{ marginType: 'none' \}, scaleFactor: 100/);
+  assert.match(m, /silent: true, deviceName: printer, copies/);
+  // No printer from Electron: Windows is asked directly, and the Windows print dialog is always offered.
+  assert.match(m, /if \(!list\.length\) list = await windowsPrinters\(\);/);
+  assert.match(m, /Get-CimInstance Win32_Printer/);
+  assert.match(m, /\} else if \(viaDialog\) \{[^]*?silent: false, copies/);
+  assert.match(m, /return \{ printed: false, cancelled: true \}/);
+  assert.match(read('src/app.js'), /Windows print dialog…<\/option>/); assert.match(m, /margins: \{ marginType: 'none' \}, scaleFactor: 100/);
   assert.match(m, /javascript: false/); assert.match(m, /setPermissionRequestHandler\(\(_wc, _perm, cb\) => cb\(false\)\)/);
   assert.match(m, /history\.unshift\(\{ at: new Date\(\)\.toISOString\(\), po: e\.po, sr: e\.sr, date: e\.date/);
   assert.match(m, /safeStorage\.encryptString/);

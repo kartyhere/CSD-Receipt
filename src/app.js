@@ -33,10 +33,14 @@
   }
 
   // ---- Print pop-up ----
+  // Printers Windows reported, plus "Windows print dialog…" (always there; chosen when no printer was found).
+  let dialogValue = '__windows_dialog__';
   async function loadPrinters() {
-    try { printers = await api.printers(); } catch { printers = []; }
-    const pick = printers.find((p) => p.name === savedPrinter) || printers.find((p) => p.isDefault) || printers[0];
-    $('printerSelect').innerHTML = printers.length ? printers.map((p) => `<option value="${esc(p.name)}" ${pick && p.name === pick.name ? 'selected' : ''}>${esc(p.label)}${p.isDefault ? ' (default)' : ''}</option>`).join('') : '<option value="">No printer found</option>';
+    try { const r = await api.printers(); printers = r.printers || []; dialogValue = r.dialog || dialogValue; } catch { printers = []; }
+    const pick = (savedPrinter === dialogValue ? { name: dialogValue } : null) || printers.find((p) => p.name === savedPrinter) || printers.find((p) => p.isDefault) || printers[0] || { name: dialogValue };
+    $('printerSelect').innerHTML = printers.map((p) => `<option value="${esc(p.name)}" ${p.name === pick.name ? 'selected' : ''}>${esc(p.label)}${p.isDefault ? ' (default)' : ''}</option>`).join('')
+      + `<option value="${esc(dialogValue)}" ${pick.name === dialogValue ? 'selected' : ''}>Windows print dialog…</option>`;
+    $('printerNote').textContent = printers.length ? '' : 'Windows did not list any printer here, so the Windows print dialog will open: choose the printer there.';
   }
   async function openPrint() {
     const e = entry(), bad = check(e);
@@ -59,6 +63,7 @@
     busy = true; $('printGo').disabled = true; $('printError').textContent = 'Printing…';
     try {
       const r = await api.print({ ...e, copies, printer: $('printerSelect').value });
+      if (r.cancelled) { $('printError').textContent = 'Printing was cancelled in the Windows print dialog. Nothing was printed.'; return; }
       savedPrinter = $('printerSelect').value; history = r.history; renderPrinted();
       closePrint(); nextOne(`Printed ${copies} cop${copies === 1 ? 'y' : 'ies'} · PO Num ${e.po} · SR Num ${e.sr}. Type the next numbers.`);
     } catch (err) { $('printError').textContent = errorText(err); }

@@ -25,6 +25,14 @@ The page must print in **Courier New Bold**. Before every print and PDF, the app
 
 Layout code: `src/layout.js` (the four lines, date format, tab width) and `src/sheet.css` (sizes in points). Do not change sizes or positions without measuring a printed PDF.
 
+## Look
+
+The window uses Business Operations Hub's shared project look (stylesheets and fonts copied unchanged; see `DESIGN-LANGUAGE.txt`). Dark by default, with a sun / moon switch in the title bar.
+
+## Size
+
+The .exe is mostly Electron (Chromium and Node). The app's own code is about 45 KB. Only the English language pack is included.
+
 ## Where things are kept
 
 `%APPDATA%\CSD Receipt\csd-receipt.dat` holds the GST number, last PO date, last printer and the Printed list. It is sealed with Windows' own protection (Electron safeStorage). The GST number is never written to the Printed list or into the PDF's file details. Nothing is sent anywhere: the app blocks every web request, permission, download and new window.

@@ -36,11 +36,12 @@
   // Printers Windows reported, plus "Windows print dialog…" (always there; chosen when no printer was found).
   let dialogValue = '__windows_dialog__';
   async function loadPrinters() {
-    try { const r = await api.printers(); printers = r.printers || []; dialogValue = r.dialog || dialogValue; } catch { printers = []; }
+    let failed = '';
+    try { const r = await api.printers(); printers = r.printers || []; dialogValue = r.dialog || dialogValue; } catch (err) { printers = []; failed = errorText(err); }
     const pick = (savedPrinter === dialogValue ? { name: dialogValue } : null) || printers.find((p) => p.name === savedPrinter) || printers.find((p) => p.isDefault) || printers[0] || { name: dialogValue };
     $('printerSelect').innerHTML = printers.map((p) => `<option value="${esc(p.name)}" ${p.name === pick.name ? 'selected' : ''}>${esc(p.label)}${p.isDefault ? ' (default)' : ''}</option>`).join('')
       + `<option value="${esc(dialogValue)}" ${pick.name === dialogValue ? 'selected' : ''}>Windows print dialog…</option>`;
-    $('printerNote').textContent = printers.length ? '' : 'Windows did not list any printer here, so the Windows print dialog will open: choose the printer there.';
+    $('printerNote').textContent = failed ? `Could not read the printer list (${failed}). The Windows print dialog will open: choose the printer there.` : printers.length ? '' : 'Windows did not list any printer here, so the Windows print dialog will open: choose the printer there.';
   }
   async function openPrint() {
     const e = entry(), bad = check(e);

@@ -1,6 +1,6 @@
 {
   "name": "csd-receipt",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "Prints the GST number, PO number, SR number and PO date on the CSD page, one after another",
   "main": "src/main.cjs",
   "author": "Karthik",
@@ -21,13 +21,31 @@
     "productName": "CSD Receipt",
     "asar": true,
     "compression": "normal",
-    "files": ["src/**/*", "package.json"],
-    "directories": { "output": "dist", "buildResources": "build" },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
     "win": {
-      "target": [{ "target": "portable", "arch": ["x64"] }],
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
       "artifactName": "CSD-Receipt-${version}-portable.exe",
       "icon": "build/icon.ico"
     },
-    "portable": { "artifactName": "CSD-Receipt-${version}-portable.exe" }
+    "portable": {
+      "artifactName": "CSD-Receipt-${version}-portable.exe"
+    },
+    "electronLanguages": [
+      "en-US"
+    ]
   }
 }

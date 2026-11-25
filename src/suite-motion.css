@@ -1,0 +1,4 @@
+/* 1.0.42 efficiency pass: all animation and transition effects were removed from the suite.
+   This file is kept (linked by To-do) only to reset any leftover hover transforms. */
+.button:hover { transform: none; }
+:is(button, .button, .btn, [role="button"]):is(:disabled, [aria-disabled="true"]) { transform: none; }

@@ -1,0 +1,946 @@
+/* Business Operations Hub — suite polish layer (1.0.37).
+   Loaded LAST on every screen, in every appearance mode (it is not disabled by Classic).
+   It resolves conflicts left between the module sheets, uniform-green-theme.css and
+   liquid-glass.css, so shared components look and behave the same in every project.
+   `:root:root body` raises specificity just enough to settle earlier layered overrides
+   without resorting to !important. */
+
+:root {
+  --ui-font:"Segoe UI Variable Text","Segoe UI",Inter,system-ui,-apple-system,Arial,sans-serif;
+  --ui-ink:#0E1F1A;
+  --ui-ink-2:#1F4A3C;
+  --ui-muted:#4E6A5F;
+  --ui-line:rgba(31,74,60,.16);
+  --ui-brand:#1E7A57;          /* primary action fill; white text = 5.3:1 */
+  --ui-brand-hover:#17654A;
+  --ui-brand-soft:#DDF3E8;
+  --ui-hero-a:#2A6450;          /* one emphasis surface per screen */
+  --ui-hero-b:#153C30;
+  --ui-on-dark:#F2FBF7;
+  --ui-on-dark-muted:#CFE9DF;
+  --ui-focus:#1E7A57;
+  --ui-radius-sm:8px;
+  --ui-radius:11px;
+  --ui-radius-lg:18px;
+  --ui-control-h:40px;
+}
+
+/* 1. Behaviour guard ------------------------------------------------------ */
+/* Receivables, Invoice, Stock and Login had no [hidden] guard, so any rule that set
+   display on a hidden element (e.g. .topbar .btn{display:inline-flex}) showed it. */
+[hidden] { display:none !important; }
+
+/* 2. One typeface across all projects ------------------------------------- */
+html, body { font-family:var(--ui-font); }
+button, input, select, textarea { font-family:inherit; }
+body :is(.amount,.num,.balance,.metric strong,.metric-card strong,.card strong,td) { font-variant-numeric:tabular-nums; }
+
+/* 3. Eyebrows: one size, weight and colour ---------------------------------- */
+:root:root body :is(.eyebrow,.nav-label,.sidebar-label) {
+  font-size:11px; font-weight:750; letter-spacing:.12em; text-transform:uppercase; color:#3D6354;
+}
+
+/* 4. Buttons ---------------------------------------------------------------- */
+/* Primary: one solid brand fill everywhere (was pale mint in project windows,
+   solid green in To-do, bright mint in Classic). */
+:root:root body :is(.btn.primary,.button.primary,button.primary,.title-row button),
+:root:root body.hub-app .dialog-actions :is(button[type="submit"],#savePassword),
+:root:root body .wallpaper-dialog .wallpaper-actions :is(button:first-child,#chooseWallpaper) {
+  background:var(--ui-brand); border:1px solid var(--ui-brand); color:#fff;
+  font-weight:700; box-shadow:inset 0 1px 0 rgba(255,255,255,.16);
+   
+}
+:root:root body :is(.btn.primary,.button.primary,button.primary,.title-row button):hover,
+:root:root body.hub-app .dialog-actions :is(button[type="submit"],#savePassword):hover,
+:root:root body .wallpaper-dialog .wallpaper-actions :is(button:first-child,#chooseWallpaper):hover {
+  background:var(--ui-brand-hover); border-color:var(--ui-brand-hover); color:#fff;
+}
+:root:root body :is(.btn.primary,.button.primary,button.primary,.title-row button):disabled {
+  background:#9DBFB0; border-color:#9DBFB0; color:#fff; box-shadow:none;
+}
+
+/* Secondary (project top bars): same height, radius and type in every project. */
+:root:root body:is(.receivables-app,.payables-app,.payment-app,.invoice-app) .topbar :is(.btn,.button,.text-button),
+:root:root body.stock-app :is(.toolbar button,.foot button) {
+  min-height:var(--ui-control-h); padding:0 15px; border-radius:var(--ui-radius);
+  font-size:13.5px; font-weight:700; line-height:1.2; white-space:nowrap;
+  display:inline-flex; align-items:center; justify-content:center; gap:6px;
+}
+/* Payment's "Change login" was a bare text link sitting between real buttons. */
+:root:root body.payment-app .topbar .text-button {
+  border:1px solid var(--lg-control-border,#CADBD3); background:var(--lg-control,#fff);
+  color:var(--ui-ink-2); box-shadow:var(--lg-sheen,none);
+}
+:root:root body.payment-app .topbar .text-button:hover { background:var(--lg-control-hover,#E7F8F1); border-color:#79A992; }
+/* In-panel "View all bills" / "Open daily register" links: legible brand text. */
+:root:root body:is(.payables-app,.payment-app) .panel :is(.text-button) {
+  color:var(--ui-brand); font-size:13px; font-weight:700; padding:7px 10px; border-radius:var(--ui-radius-sm);
+}
+:root:root body:is(.payables-app,.payment-app) .panel .text-button:hover { background:var(--ui-brand-soft); color:var(--ui-brand-hover); }
+
+/* Danger actions stay recognisably red in every mode. */
+:root:root body :is(.button.danger,.import-danger,.importdanger,.delete-review-btn,.delete-ledger) {
+  background:#FFF0ED; border-color:#C98A80; color:#87372E; box-shadow:none;
+}
+:root:root body :is(.button.danger,.import-danger,.importdanger,.delete-review-btn,.delete-ledger):hover {
+  background:#8D3D35; border-color:#8D3D35; color:#fff;
+}
+
+/* One focus ring (Stock still used the old blue outline). */
+body :is(button,.btn,.button,a[href],input,select,textarea,[role="tab"]):focus-visible {
+  outline:2px solid var(--ui-focus); outline-offset:2px;
+}
+
+/* 5. Hero / emphasis surfaces ------------------------------------------------ */
+/* The headline KPI and the party detail header were dark in Classic but turned
+   near-white in Glass/Frosted/Solid while their buttons kept white text, which made
+   "Edit party / Export Excel / Export PDF" invisible. One dark treatment in all modes. */
+:root:root body.receivables-app :is(.metric.accent,.detail-hero),
+:root:root body:is(.payables-app,.payment-app) .metric-card.accent,
+:root:root body.payment-app .party-detail-hero {
+  background:linear-gradient(135deg,var(--ui-hero-a) 0%,var(--ui-hero-b) 100%);
+  border-color:var(--ui-hero-b); color:var(--ui-on-dark);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14);
+   
+}
+:root:root body.receivables-app :is(.metric.accent,.detail-hero) :is(.label,.sub,span,small,p,.code,.eyebrow,.muted),
+:root:root body:is(.payables-app,.payment-app) .metric-card.accent :is(span,small,p),
+:root:root body.payment-app .party-detail-hero :is(span,small,p,.eyebrow,.detail-code) { color:var(--ui-on-dark-muted); }
+:root:root body.receivables-app :is(.metric.accent,.detail-hero) :is(strong,h1,h2,h3,b),
+:root:root body:is(.payables-app,.payment-app) .metric-card.accent strong,
+:root:root body.payment-app .party-detail-hero :is(strong,h1,h2,h3) { color:#fff; }
+:root:root body :is(.detail-hero,.party-detail-hero) :is(.btn,.button,button:not(.primary)) {
+  min-height:38px; padding:0 14px; border:1px solid rgba(255,255,255,.34); border-radius:var(--ui-radius);
+  background:rgba(255,255,255,.10); color:#fff; font-size:13px; font-weight:700; box-shadow:none;
+   
+}
+:root:root body :is(.detail-hero,.party-detail-hero) :is(.btn,.button,button:not(.primary)):hover {
+  background:rgba(255,255,255,.20); border-color:rgba(255,255,255,.6); color:#fff;
+}
+
+/* Ordinary metric cards: one radius and label rhythm. */
+:root:root body :is(.metric,.metric-card,.stock-app .cards .card) { border-radius:16px; }
+:root:root body :is(.metric .label,.metric-card>span:first-child) { font-size:13px; font-weight:650; }
+
+/* 6. Status pills: one shape in every module --------------------------------- */
+/* Payables used UPPERCASE without a dot, Receivables Title-case with a dot. */
+:root:root body .status {
+  display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px;
+  font-size:12px; font-weight:700; line-height:1.3; letter-spacing:0; text-transform:none; white-space:nowrap;
+}
+:root:root body .status::before { content:""; flex:none; width:6px; height:6px; border-radius:50%; background:currentColor; }
+:root:root body .status:is(.paid,.matched,.cleared) { background:#DDF5EA; color:#15543F; border-color:#9DD4BE; }
+:root:root body .status:is(.pending,.part-paid,.needs_review) { background:#FFF1CF; color:#6F4E0F; border-color:#E4C77B; }
+:root:root body .status:is(.overdue,.unmatched,.not_uploaded) { background:#FCE9E6; color:#8D352F; border-color:#D9A29D; }
+:root:root body .status.unpaid { background:#EAF2EE; color:#405D53; border-color:#B6D0C6; }
+
+/* Sidebar count badges (Payables' dark badge showed a dark number). */
+:root:root body .sidebar :is(.nav-badge,.badge) {
+  display:inline-grid; place-items:center; min-width:22px; height:20px; margin-left:auto; padding:0 7px;
+  border-radius:999px; background:var(--ui-brand-soft); color:var(--ui-ink-2);
+  font-size:11px; font-weight:800; line-height:1; box-shadow:none;
+}
+:root:root body .sidebar .nav-badge.danger-badge { background:#FCE9E6; color:#8D352F; }
+:root:root body.payment-app .sidebar .badge { background:#FFF1CF; color:#6F4E0F; }
+
+/* 7. Project sidebars: one nav rhythm ------------------------------------------ */
+:root:root body:is(.receivables-app,.payables-app,.payment-app,.invoice-app) .sidebar :is(.nav-button,.nav button) {
+  min-height:42px; border-radius:var(--ui-radius); font-size:14px; font-weight:650;
+  display:flex; align-items:center; gap:10px;
+}
+:root:root body:is(.payables-app,.payment-app) .sidebar .nav-button>span:not(.suite-icon) {
+  min-width:20px; color:var(--lg-sidebar-muted,#557067); font-size:11px; font-weight:750;
+}
+:root:root body:is(.payables-app,.payment-app) .sidebar .nav-button>.suite-icon { width:28px; height:28px; }
+:root:root body.receivables-app .sidebar .nav button>.suite-icon { width:26px; height:26px; margin:0; }
+/* App marks use the same pictogram sprite as the Hub project list.
+   The glass sidebar's `background:` shorthand erased the sprite image. */
+:root:root body :is(.sidebar,.auth-card,.login-intro,.topbar,header) :is(.brand-mark,.mark,.auth-mark,.login-logo).suite-icon,
+:root:root body.stock-app > header .suite-icon {
+  width:42px; height:42px; padding:0; border:0; border-radius:0; box-shadow:none; color:transparent;
+  background-color:transparent; background-repeat:no-repeat; background-position:center; background-size:contain;
+  flex:none; font-size:0;
+}
+:root:root body :is(.auth-card,.login-intro) :is(.auth-mark,.login-logo).suite-icon { width:56px; height:56px; }
+:root:root body.stock-app > header .suite-icon { width:34px; height:34px; margin-right:12px; }
+
+/* 8. Nested glass: controls inside a card should not float as a second card ------ */
+:root:root body.receivables-app .surface .filters {
+  padding:0; border:0; border-radius:0; background:transparent; box-shadow:none;
+   
+}
+:root:root body.receivables-app .surface .segments {
+  align-self:end; height:43px; align-items:center; padding:3px; border:1px solid #C9DCD3; border-radius:var(--ui-radius);
+  background:#EEF6F2; box-shadow:none;  
+}
+:root:root body.receivables-app .surface .segments button { height:35px; padding:0 12px; border-radius:8px; }
+:root:root body .segments button.active,
+:root:root body .task-tabs button.active {
+  background:#fff; color:var(--ui-ink-2); box-shadow:0 1px 3px rgba(14,31,26,.12),inset 0 0 0 1px rgba(31,74,60,.10);
+}
+
+/* 9. Hub ------------------------------------------------------------------ */
+:root:root body.hub-app .header-actions :is(button,#dataLocation,#logout,#changePassword,#openWallpaper) {
+  height:38px; padding:0 14px; border:1px solid rgba(31,74,60,.2); border-radius:var(--ui-radius);
+  background:rgba(255,255,255,.82); color:var(--ui-ink-2); font-size:12.5px; font-weight:700;
+  box-shadow:0 1px 2px rgba(14,31,26,.05);   outline:0;
+}
+:root:root body.hub-app .header-actions :is(button,#dataLocation,#logout,#changePassword,#openWallpaper):hover {
+  border-color:#5FAE8D; background:#fff; color:var(--ui-ink-2);
+}
+:root:root body.hub-app .header-actions :is(button,#dataLocation,#logout,#changePassword,#openWallpaper):focus-visible {
+  outline:2px solid var(--ui-focus); outline-offset:2px;
+}
+:root:root body.hub-app .appearance-picker { font-size:12px; color:var(--ui-muted); }
+:root:root body.hub-app .appearance-picker select {
+  width:112px; min-width:112px; height:38px; padding:0 10px; border:1px solid rgba(31,74,60,.2);
+  border-radius:var(--ui-radius); background-color:rgba(255,255,255,.82); color:var(--ui-ink-2);
+  font:700 12.5px var(--ui-font); box-shadow:0 1px 2px rgba(14,31,26,.05);
+}
+:root:root body.hub-app .header-actions .today span { font-size:11px; letter-spacing:.1em; }
+:root:root body.hub-app .header-actions .today strong { font-size:15px; }
+/* Every project row now shares one "Open" pill (To-do's was dark). */
+:root:root body.hub-app .project-card .project-open,
+:root:root body.hub-app .todo-project .project-open {
+  padding:6px 11px; border-radius:999px; background:var(--ui-brand-soft); color:var(--ui-ink-2);
+  font-size:11px; font-weight:800; letter-spacing:.06em;
+}
+:root:root body.hub-app .project-card:is(:hover,:focus-visible) .project-open { background:var(--ui-brand); color:#fff; }
+:root:root body.hub-app .todo-project { background:var(--lg-card,#fff); border-color:var(--lg-control-border,rgba(31,74,60,.17)); }
+:root:root body.hub-app .project-copy strong { font-size:15px; }
+:root:root body.hub-app .project-copy small { font-size:12px; color:var(--ui-muted); }
+:root:root body.hub-app .section-heading>span { padding:5px 10px; border-radius:999px; font-size:11px; }
+/* Calendar: legible numbers, and a readable "today" cell. */
+:root:root body.hub-app .calendar-weekdays span { font-size:10.5px; letter-spacing:.08em; color:var(--ui-muted); }
+:root:root body.hub-app .calendar-day { font-size:13px; font-weight:650; border-radius:10px; }
+:root:root body.hub-app .calendar-day.outside { color:#9AADA5; }
+:root:root body.hub-app .calendar-day.today { background:var(--ui-brand); border-color:var(--ui-brand); color:#fff; font-weight:800; }
+:root:root body.hub-app .calendar-day b {
+  min-width:16px; height:16px; right:4px; bottom:4px; padding:0 4px; font-size:10px; font-weight:800;
+  background:var(--ui-brand); color:#fff;
+}
+:root:root body.hub-app .calendar-day.today b { background:#fff; color:var(--ui-brand); }
+:root:root body.hub-app .calendar-help { font-size:11.5px; color:var(--ui-muted); }
+/* Today's plan */
+:root:root body.hub-app .today-task-row strong,
+:root:root body.hub-app .today-task-empty strong { font-size:13px; }
+:root:root body.hub-app .today-task-row small,
+:root:root body.hub-app .today-task-empty small { font-size:11.5px; }
+:root:root body.hub-app .cleanup-actions button {
+  height:34px; padding:0 13px; border-radius:var(--ui-radius-sm); font-size:12px; font-weight:700;
+}
+:root:root body.hub-app .cleanup-actions #openTodoList { background:var(--ui-brand); border-color:var(--ui-brand); color:#fff; }
+:root:root body.hub-app .cleanup-actions #openTodoList:hover { background:var(--ui-brand-hover); }
+:root:root body.hub-app .cleanup-actions button:disabled { opacity:.55; }
+:root:root body.hub-app .local-note strong { font-size:12px; }
+:root:root body.hub-app .local-note small { font-size:11.5px; }
+
+/* 10. To-do ---------------------------------------------------------------- */
+:root:root body .task-actions button { font-size:12px; font-weight:700; padding:6px 10px; border-radius:var(--ui-radius-sm); }
+:root:root body .task-actions button:hover { background:var(--ui-brand-soft); }
+:root:root body .task-actions button:last-child { color:#8D352F; }
+:root:root body .task-actions button:last-child:hover { background:#FCE9E6; }
+:root:root body .task-meta span { font-size:10.5px; }
+:root:root body .task-stats small { font-size:10.5px; }
+:root:root body .topbar .brand-mark.suite-icon { width:48px; height:48px; }
+
+/* 11. Invoice Clearing: bring its type scale in line with the other projects ---- */
+:root:root body.invoice-app .topbar h1 { font-size:28px; }
+:root:root body.invoice-app .search-box { min-height:48px; font-size:15px; }
+:root:root body.invoice-app .search-box input { font-size:15px; }
+:root:root body.invoice-app .data-table td { font-size:14px; }
+:root:root body.invoice-app .sidebar .button.settle strong,
+:root:root body.invoice-app .sidebar .button.settle { font-size:14px; }
+
+/* 12. GP & Stock Helper: the leftover blue theme ------------------------------- */
+/* Selected branch matches the selected party in Receivables: mint with a brand edge. */
+:root:root body.stock-app button.active {
+  background:var(--ui-brand-soft); border-color:#9CCFB8; color:var(--ui-ink-2); font-weight:700;
+}
+:root:root body.stock-app button.active[aria-pressed="true"] { box-shadow:inset 3px 0 var(--ui-brand); }
+:root:root body.stock-app .branchlist button { font-size:14px; border-radius:var(--ui-radius-sm); }
+:root:root body.stock-app :is(nav button,.secondary button,.toolbar button) { font-size:14px; min-height:38px; padding:0 14px; border-radius:var(--ui-radius); }
+:root:root body.stock-app > header { display:flex; align-items:center; }
+:root:root body.stock-app > header strong { display:inline-flex; align-items:center; font-size:20px; color:var(--lg-sidebar-text,#EAF8F3); }
+:root:root body.stock-app > header small { font-size:13px; color:var(--lg-sidebar-muted,#CFE9DF); opacity:1; }
+:root:root body.stock-app .gpnote { border-left-color:var(--ui-brand); background:#E7F8F1; color:var(--ui-ink-2); }
+:root:root body.stock-app .taccount :is(td,th):nth-child(3) { border-left-color:#4E8A72; }
+:root:root body.stock-app :is(.mismatch,.pending) { border-radius:6px; }
+:root:root body.stock-app h1 { font-size:28px; letter-spacing:-.03em; }
+
+/* 13. Page titles share one size ------------------------------------------------ */
+:root:root body:is(.receivables-app,.payables-app,.payment-app,.stock-app) .topbar h1,
+:root:root body .workspace-head h1 { font-size:28px; letter-spacing:-.035em; }
+
+/* 14. Login screens: legible eyebrow over artwork ------------------------------- */
+:root:root body :is(.login-intro,.intro) .eyebrow { color:#2D5C49; }
+
+/* 15. Payables section switch: same scale as other tab groups ------------------- */
+:root:root body.payables-app .section-button { font-size:14px; padding:8px 16px; border-radius:9px; }
+:root:root body.payables-app .section-button.active { background:#fff; color:var(--ui-ink-2); box-shadow:0 1px 3px rgba(14,31,26,.12),inset 0 0 0 1px rgba(31,74,60,.10); }
+:root:root body:is(.payables-app,.payment-app) .brand small { font-size:11.5px; line-height:1.35; }
+:root:root body.payment-app .button.quiet { font-size:13px; font-weight:700; min-height:40px; padding:0 14px; }
+
+/* 16. To-do: balanced form scale and legible priority tags ----------------------- */
+:root:root body .composer :is(input,select),
+:root:root body .composer .date-control input { font-size:14px; }
+:root:root body .composer .date-control button,
+:root:root body .composer .title-row button { font-size:13px; font-weight:700; }
+:root:root body .task-search input { font-size:13px; }
+:root:root body .task-tabs button { font-size:12px; }
+:root:root body .task-main strong { font-size:14px; }
+:root:root body .task-main p { font-size:12px; }
+/* #22C08A text on white is ~2.3:1; the medium tag keeps its green edge but darker text. */
+:root:root body .task-item.medium .task-meta .priority { color:#16734F; }
+
+/* 17. Payment: import actions use the standard control size ----------------------- */
+:root:root body.payment-app .help-card :is(.button,button),
+:root:root body.payment-app .daily-toolbar :is(.button,button):not(.icon-button) {
+  min-height:40px; font-size:13px; font-weight:700; border-radius:var(--ui-radius);
+}
+
+/* 18. Branch Accounting: title matches the other projects ------------------------- */
+:root:root body .topbar h1#pageTitle { font-size:clamp(24px,2.2vw,30px); letter-spacing:-.035em; }
+:root:root body .topbar h1#pageTitle:is(.payment-app *,.receivables-app *) { font-size:28px; }
+
+/* 19. Hub header fits one row on 1280px laptops ---------------------------------- */
+:root:root body.hub-app .identity h1 { font-size:clamp(24px,2.3vw,36px); white-space:nowrap; }
+:root:root body.hub-app .welcome-bar { gap:24px; }
+@media (max-width:1440px) {
+  /* The select keeps its aria-label; the visible word is dropped to save width. */
+  :root:root body.hub-app .appearance-picker { font-size:0; gap:0; }
+  :root:root body.hub-app .header-actions { gap:8px; }
+  :root:root body.hub-app .header-actions :is(button,#dataLocation,#logout,#changePassword,#openWallpaper) { padding:0 12px; }
+}
+
+/* 20. Receivables filters on laptop widths: inputs on one row, status switch below -- */
+@media (max-width:1440px) and (min-width:721px) {
+  :root:root body.receivables-app .filters { grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr); }
+  :root:root body.receivables-app .filters .segments { grid-column:1/-1; justify-self:start; }
+}
+@media (max-width:1366px) {
+  :root:root body.hub-app .header-actions .today strong { font-size:14px; }
+  :root:root body.hub-app .header-actions :is(button,#dataLocation,#logout,#changePassword,#openWallpaper) { font-size:12px; }
+}
+
+/* ── GP & Stock Helper: Head Office ───────────────────────────────────────
+   Head Office is the one branch that moves two stock types in each direction,
+   so it gets a quiet brand-green marker everywhere it appears. */
+:root:root body.stock-app .hqtag { display:inline-block; margin-left:6px; padding:1px 8px; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:.04em; line-height:1.6; vertical-align:middle; background:#DDF3E8; color:#14664A; border:1px solid #A9D9C3; }
+:root:root body.stock-app button.active .hqtag { background:rgba(255,255,255,.2); color:inherit; border-color:rgba(255,255,255,.45); }
+:root:root body.stock-app .hqentry { box-shadow:inset 3px 0 var(--ui-brand); padding-left:16px; }
+:root:root body.stock-app .hqpanel { border-color:#A9D9C3; box-shadow:inset 0 3px 0 var(--ui-brand); }
+:root:root body.stock-app .hqmatrix th { white-space:normal; min-width:120px; text-align:right; }
+:root:root body.stock-app .hqmatrix th:first-child { text-align:left; min-width:150px; }
+
+/* Payables: bills in hand (green) beside the amber/red verification cards. */
+:root:root body.payables-app .exception-card.success-card { border-color:#9DD4BE; background:#E7F8F1; color:#15543F; }
+:root:root body.payables-app .exception-card.success-card span { color:#15543F; }
+
+/* ════════════════════════════════════════════════════════════════════════
+   Within-project consistency pass (1.0.39)
+   ════════════════════════════════════════════════════════════════════════ */
+
+/* All projects: placeholders were bold and nearly as dark as typed text, so empty
+   fields read as filled. Regular weight, softer ink. */
+:root:root body :is(input,textarea)::placeholder { font-weight:400; color:#6B8279; opacity:1; }
+
+/* Payables: the Spares / Accessories / All bills switch showed every option as a white
+   pill, so the active section was impossible to spot. Inactive = flat, active = raised white. */
+:root:root body.payables-app .section-switch { background:rgba(222,240,232,.72); }
+:root:root body.payables-app .section-button:not(.active) { background:transparent; border-color:transparent; box-shadow:none; color:#2F5A49; }
+:root:root body.payables-app .section-button:not(.active):hover { background:rgba(255,255,255,.6); }
+:root:root body.payables-app .section-button.active { background:#fff; color:#14664A; font-weight:800; border-color:rgba(30,122,82,.28); }
+
+/* Payment Tracker + Payables: buttons ranged from 11px to 13.5px on the same screen. */
+:root:root body:is(.payment-app,.payables-app) :is(.button,.text-button) { font-size:13px; }
+:root:root body.payment-app .button:not(.block):not(.push-right) { min-height:38px; }
+:root:root body.payment-app .panel .button { font-size:13px; }
+:root:root body.payables-app .sync-banner .button { font-size:13px; min-height:38px; }
+/* Table header gutter showed a stray white block when there was nothing to scroll. */
+:root:root body:is(.payment-app,.payables-app) .table-wrap { scrollbar-gutter:auto; }
+
+/* Invoice Clearing: only two header cells were monospace; headers share one face and
+   the Source pill no longer breaks "IMPORT.XLSX" over two lines. */
+:root:root body.invoice-app .data-table th { font-family:inherit; }
+:root:root body.invoice-app .data-table .source { width:13%; }
+:root:root body.invoice-app .source-pill { white-space:nowrap; }
+:root:root body.invoice-app :is(.batch-card,.settlement) .eyebrow { line-height:1.4; }
+
+/* Receivables: the ledger was 12px wider than its card, so the right-hand "Clear"
+   buttons sat flush against (and under) the edge. */
+:root:root body.receivables-app .data-table { min-width:1040px; }
+:root:root body.receivables-app .data-table :is(th,td) { padding-left:12px; padding-right:12px; }
+:root:root body.receivables-app .data-table :is(th,td):last-child { padding-right:20px; }
+
+/* GP & Stock: text columns in the review table were right-aligned like numbers,
+   and the "Branch" table header looked like a selected first branch. */
+:root:root body.stock-app .reviewtable :is(th,td):is(:nth-child(-n+3),:last-child) { text-align:left; }
+:root:root body.stock-app .branchtable thead { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+
+/* Classic (dark sidebar): sidebar note copy and nav numbers were dark green on dark green. */
+:root:root[data-theme="classic"] body.payables-app .sidebar-note span { color:#C3DDD1; }
+:root:root[data-theme="classic"] body:is(.payables-app,.payment-app) .nav-button > span:not(.suite-icon) { color:#A6CDB9; }
+
+/* Invoice Clearing, Classic: the sidebar's action cards turned cream while their captions stayed
+   pale, and the division captions / batch label were dark on dark. Give the dark sidebar one
+   consistent set of surfaces and inks. */
+:root:root[data-theme="classic"] body.invoice-app .sidebar .nav-label { color:#9FC8B4; }
+:root:root[data-theme="classic"] body.invoice-app .sidebar .division-button small { color:#B5D5C5; }
+:root:root[data-theme="classic"] body.invoice-app .sidebar .division-button:not(.active) { background:rgba(255,255,255,.06); color:#E6F4EC; border-color:rgba(255,255,255,.12); }
+:root:root[data-theme="classic"] body.invoice-app .sidebar .division-button.active small { color:#1D5A43; }
+:root:root[data-theme="classic"] body.invoice-app .sidebar .session-card { background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.14); color:#E6F4EC; }
+:root:root[data-theme="classic"] body.invoice-app .sidebar .session-card :is(strong,span) { color:#F0FAF5; }
+:root:root[data-theme="classic"] body.invoice-app .sidebar :is(.button.settle,.sidebar-actions .button) { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.16); color:#F0FAF5; }
+:root:root[data-theme="classic"] body.invoice-app .sidebar :is(.button.settle,.sidebar-actions .button):hover:not(:disabled) { background:rgba(255,255,255,.15); }
+:root:root[data-theme="classic"] body.invoice-app .sidebar :is(.button.settle,.sidebar-actions .button) small { color:#B5D5C5; }
+:root:root[data-theme="classic"] body.invoice-app .sidebar :is(.button.settle,.sidebar-actions .button):disabled { opacity:.55; }
+
+/* Invoice Clearing: dates broke onto two lines in the narrow "Cleared on" column. */
+:root:root body.invoice-app .data-table td:last-child { white-space:nowrap; }
+
+/* Transfer matrix: Head Office cells carry two stock types, stacked. */
+:root:root body.stock-app .typedcell { padding:2px 4px; }
+:root:root body.stock-app .typedamount { display:flex; align-items:center; justify-content:space-between; gap:8px; min-width:118px; padding:5px 10px; }
+:root:root body.stock-app .typedamount + .typedamount { border-top:1px dashed rgba(30,122,82,.28); }
+:root:root body.stock-app .typetag { font-style:normal; font-size:10px; font-weight:800; line-height:1.5; padding:0 5px; border-radius:4px; background:#DDF3E8; color:#14664A; }
+:root:root body.stock-app .hqkey { background:#E7F8F1; color:#14664A; }
+:root:root body.stock-app .transfermatrix th .hqtag { margin-left:4px; }
+
+/* ===========================================================================
+   Two appearances only (1.0.43): Dark (pure black) and Light (warm sand/teal,
+   from the palette 2589bd · 187795 · 38686a · a3b4a2 · cdc6ae).
+   Everything below reads from the --t-* tokens, so both themes use one set of rules:
+   flat, opaque surfaces, a 1px border on every container/control/table, no gradients,
+   shadows, blur or motion. */
+:root[data-theme="dark"] {
+  color-scheme:dark;
+  --t-bg:#000; --t-surface:#0c0f0e; --t-raised:#151a18; --t-sunken:#050706;
+  --t-line:#3d4d46; --t-line-strong:#6f8a7e;
+  --t-text:#f1f7f4; --t-muted:#b4c4bc; --t-placeholder:#8da097; --t-link:#7fe3b8;
+  --t-brand:#3fdc9f; --t-brand-ink:#00140c; --t-brand-hover:#6df0bb; --t-brand-fill:#3fdc9f;
+  --t-brand-soft:#0f2a20; --t-brand-line:#2f7d5d;
+  --t-danger:#ff8d83; --t-danger-soft:#2d1412; --t-danger-line:#9b4a43;
+  --t-warn:#f4c95d; --t-warn-soft:#2b2410; --t-warn-line:#8a7330;
+  --t-info:#7cc4ff; --t-info-line:#3d6f99;
+  --t-hover:#222b27; --t-selected:#13251d; --t-self:#1a1f1d; --t-scrim:rgba(0,0,0,.82);
+}
+:root[data-theme="light"] {
+  color-scheme:light;
+  --t-bg:#f3efe3; --t-surface:#faf8f1; --t-raised:#efeadb; --t-sunken:#ffffff;
+  --t-line:#cdc6ae; --t-line-strong:#6f7f6f;
+  --t-text:#1c2b2c; --t-muted:#4a5f61; --t-placeholder:#5e706d; --t-link:#0f5f80;
+  --t-brand:#106584; --t-brand-ink:#ffffff; --t-brand-hover:#115a72; --t-brand-fill:#106584;
+  --t-brand-soft:#dcebe8; --t-brand-line:#7fb0b3;
+  --t-danger:#a3362d; --t-danger-soft:#f6dfdb; --t-danger-line:#d39a93;
+  --t-warn:#7d5200; --t-warn-soft:#f3e7c3; --t-warn-line:#cfb56b;
+  --t-info:#1d6f9c; --t-info-line:#8fbad6;
+  --t-hover:#e6e0cc; --t-selected:#d3e6e4; --t-self:#e5dfcd; --t-scrim:rgba(28,43,44,.55);
+}
+:root[data-theme] {
+  --ui-ink:var(--t-text); --ui-ink-2:var(--t-text); --ui-muted:var(--t-muted); --ui-line:var(--t-line);
+  --ui-brand:var(--t-brand-fill); --ui-brand-hover:var(--t-brand-hover); --ui-brand-soft:var(--t-brand-soft);
+  --ui-hero-a:var(--t-surface); --ui-hero-b:var(--t-surface); --ui-on-dark:var(--t-text); --ui-on-dark-muted:var(--t-muted); --ui-focus:var(--t-brand);
+  --ink:var(--t-text); --muted:var(--t-muted); --line:var(--t-line); --canvas:var(--t-bg); --paper:var(--t-surface);
+  --green:var(--t-brand); --green-dark:var(--t-brand); --green-soft:var(--t-brand-soft); --on-dark:var(--t-text); --on-dark-muted:var(--t-muted);
+  --red:var(--t-danger); --danger:var(--t-danger); --warning:var(--t-warn);
+  --dark:var(--t-surface); --mint:var(--t-brand); --mint-soft:var(--t-brand-soft); --surface:var(--t-surface);
+  --glass:var(--t-surface); --glass-strong:var(--t-raised); --glass-panel:var(--t-surface); --glass-card:var(--t-raised);
+  --shadow:none; --shadow-soft:none; --glass-shadow:none; --lg-shadow:none; --lg-sheen:none;
+  --hub-header-bg:var(--t-bg); --hub-picker-bg:var(--t-raised);
+  --panel:var(--t-surface); --brand:var(--t-brand); --nav:var(--t-bg);
+}
+
+:root[data-theme]:root body { background:var(--t-bg); background-image:none; color:var(--t-text); }
+:root[data-theme]:root body::before, :root[data-theme]:root body::after { background:none; background-image:none; }
+:root[data-theme]:root :is(input,textarea,select) { background:var(--t-sunken); color:var(--t-text); border:1px solid var(--t-line-strong); }
+:root[data-theme]:root :is(input,textarea,select):focus { outline:2px solid var(--t-brand); outline-offset:1px; border-color:var(--t-brand); box-shadow:none; }
+:root[data-theme]:root ::placeholder { color:var(--t-placeholder); opacity:1; }
+
+/* Surfaces: opaque dark with a visible border. */
+:root[data-theme]:root body :is(
+  .table-wrap,.table-scroll,.modal,dialog,aside.sidebar,.sidebar,.segments,.section-switch,.notice,.panel,.card,.surface,
+  .welcome-bar,.projects-panel,.task-cleanup,.calendar-panel,.login-card,.party-panel,.detail-panel,.topbar,.filter-bar,.sync-banner,
+  .section-intro,.daily-toolbar,.workspace-card,.auth-card,.gpresults,.summary-strip,.metric,.metric-card,.stat,.hero,
+  .day-popover,.password-dialog,.wallpaper-dialog,.credentials-dialog,.focus-panel,.today-task-row,.project-card,.task-card,
+  .party-card,.import-card,.session-card,.nav-current,.glass,.main-panel,.toolbar,.hqpanel,.hqentry,.dialog,.toast,#toast) {
+  background:var(--t-surface); color:var(--t-text); border:1px solid var(--t-line); box-shadow:none; background-image:none;
+}
+:root[data-theme]:root body :is(.table-wrap,.table-scroll) { border-color:var(--t-line-strong); }
+:root[data-theme]:root body :is(aside.sidebar,.sidebar) { background:var(--t-bg); border-width:0 1px 0 0; border-color:var(--t-line-strong); }
+:root[data-theme]:root body :is(dialog,.modal,.password-dialog,.wallpaper-dialog,.credentials-dialog,.day-popover) { background:var(--t-raised); border:1px solid var(--t-line-strong); }
+:root[data-theme]:root dialog::backdrop, :root[data-theme]:root .modal-backdrop { background:var(--t-scrim); }
+:root[data-theme]:root body :is(.notice,.sync-banner) { background:var(--t-brand-soft); border-color:var(--t-brand-line); color:var(--t-text); }
+
+/* Tables */
+:root[data-theme]:root body table { background:var(--t-surface); color:var(--t-text); border-collapse:collapse; }
+:root[data-theme]:root body :is(th) { background:var(--t-raised); color:var(--t-text); border-bottom:1px solid var(--t-line-strong); border-right:1px solid var(--t-line); }
+:root[data-theme]:root body :is(td) { background:var(--t-surface); color:var(--t-text); border-bottom:1px solid var(--t-line); border-right:1px solid var(--t-line); }
+:root[data-theme]:root body tr.selected :is(td,th), :root[data-theme]:root body tr:hover td { background:var(--t-selected); }
+:root[data-theme]:root body :is(td.muted,.muted,small) { color:var(--t-muted); }
+:root[data-theme]:root body :is(td.selfcell) { background:var(--t-self); }
+
+/* Buttons */
+:root[data-theme]:root body :is(button,.button,.btn,.text-button,.icon-button,.row-action,.page-button,.button.secondary,.button.quiet) {
+  background:var(--t-raised); color:var(--t-text); border:1px solid var(--t-line-strong); box-shadow:none;
+}
+:root[data-theme]:root body :is(button,.button,.btn):hover:not(:disabled) { background:var(--t-hover); border-color:var(--t-brand); }
+:root[data-theme]:root body :is(button,.button,.btn):disabled { opacity:.5; }
+:root[data-theme]:root body :is(button:focus-visible,a:focus-visible,summary:focus-visible) { outline:2px solid var(--t-brand); outline-offset:2px; }
+:root[data-theme]:root body :is(.btn.primary,.button.primary,button.primary,.title-row button,button[type="submit"]) {
+  background:var(--t-brand); color:var(--t-brand-ink); border:1px solid var(--t-brand); font-weight:750;
+}
+:root[data-theme]:root body :is(.btn.primary,.button.primary,button.primary,.title-row button,button[type="submit"]):hover:not(:disabled) { background:var(--t-brand-hover); border-color:var(--t-brand-hover); color:var(--t-brand-ink); }
+
+/* Active / selected navigation and tabs */
+:root[data-theme]:root body :is(.nav-button,.nav-link,.branch-button,.tab,.section-button,.party-card,.division-button) { background:transparent; color:var(--t-text); border:1px solid var(--t-line); }
+:root[data-theme]:root body :is(.nav-button.active,.tab.active,.branch-button.active,.section-button.active,.party-card.active,.division-button.active,button.active) {
+  background:var(--t-brand-soft); color:var(--t-text); border:1px solid var(--t-brand); box-shadow:inset 3px 0 var(--t-brand);
+}
+:root[data-theme]:root body :is(.nav-current) { background:var(--t-brand-soft); border-color:var(--t-brand); }
+
+/* Pills, tags, status */
+:root[data-theme]:root body :is(span.status,span.pending,span.mismatch,span.key,span.hqtag,span.hqkey,span.code,.pill,.badge,.chip,.typetag) {
+  background:var(--t-raised); color:var(--t-text); border:1px solid var(--t-line-strong);
+}
+:root[data-theme]:root body :is(.status.pending,span.pending) { background:var(--t-warn-soft); color:var(--t-warn); border-color:var(--t-warn-line); }
+:root[data-theme]:root body :is(.status.overdue,span.mismatch,.danger,.overdue) { color:var(--t-danger); }
+:root[data-theme]:root body :is(span.status.overdue,span.mismatch) { background:var(--t-danger-soft); border-color:var(--t-danger-line); }
+:root[data-theme]:root body :is(span.hqtag,span.hqkey) { background:var(--t-brand-soft); border-color:var(--t-brand); color:var(--t-brand); }
+:root[data-theme]:root body :is(.danger-section,.summary-strip.danger-summary) { background:var(--t-danger-soft); border-color:var(--t-danger-line); }
+:root[data-theme]:root body :is(h1,h2,h3,h4,strong,label,legend) { color:var(--t-text); }
+:root[data-theme]:root body a { color:var(--t-link); }
+:root[data-theme]:root body :is(.eyebrow,.nav-label,.sidebar-label) { color:var(--t-brand); }
+:root[data-theme]:root body :is(hr) { border-color:var(--t-line); }
+
+/* Second pass: remaining light surfaces, low-contrast text, decorative layers */
+:root[data-theme]:root body :is(.ambient,.brand-glow,.sidebar::before) { display:none; }
+:root[data-theme]:root body :is(aside.sidebar,.sidebar,nav.sidebar,.todo-header,.rail) { background:var(--t-bg); background-image:none; }
+:root[data-theme]:root body :is(aside.sidebar,.sidebar)::before { background:none; }
+:root[data-theme]:root body :is(.table-region,.task-tabs,.task-area,.empty,tr.empty,tr.empty td,tr.selected-row td,.import-help,.help-box,.local-note,.privacy-note) {
+  background:var(--t-surface); color:var(--t-text); border-color:var(--t-line);
+}
+:root[data-theme]:root body :is(.task-item,article.task-item,article.task-item.low,article.task-item.high,article.task-item.medium) {
+  background:var(--t-surface); color:var(--t-text); border:1px solid var(--t-line-strong);
+}
+:root[data-theme]:root body article.task-item.overdue { background:var(--t-danger-soft); border-color:var(--t-danger-line); }
+:root[data-theme]:root body :is(.today-stat,.overdue-stat,.module-list span,span.priority,span.due,span.source-pill,span.category-icon,span.import-status,span.action-pill,.task-meta span) {
+  background:var(--t-raised); color:var(--t-text); border:1px solid var(--t-line-strong);
+}
+:root[data-theme]:root body :is(.overdue-stat,span.due.overdue-label,.overdue-label) { background:var(--t-danger-soft); color:var(--t-danger); border-color:var(--t-danger-line); }
+:root[data-theme]:root body :is(.today-stat,span.due.today-label) { background:var(--t-brand-soft); color:var(--t-brand); border-color:var(--t-brand); }
+:root[data-theme]:root body :is(span.action-pill.cleared,span.import-status) { color:var(--t-brand); }
+:root[data-theme]:root body :is(.hub-app header,.welcome-bar) button, :root[data-theme]:root body.hub-app :is(.header-actions button,.header-actions select,.appearance-picker select,.appearance-picker) {
+  background:var(--t-raised); color:var(--t-text); border:1px solid var(--t-line-strong);
+}
+:root[data-theme]:root body.hub-app .appearance-picker { border:0; background:transparent; }
+
+/* Body copy and secondary text: legible greys instead of dark greens */
+:root[data-theme]:root body :is(p,li,dd,dt,small,.sub,.label,.filter-label,.result-count,.session-user,.key-help,.keyboard-hint,.legend,.section-note,.clear-hint,.hint,.help,.description,.note,.muted,span.muted) { color:var(--t-muted); }
+:root[data-theme]:root body :is(td,th) :is(strong,b,a,div,span:not([class])) { color:var(--t-text); }
+:root[data-theme]:root body td :is(small,.muted,.sub) { color:var(--t-muted); }
+:root[data-theme]:root body :is(span.invoice-id,span.party-name,span.party-code,td.invoice-id,.party-cell strong) { color:var(--t-text); }
+:root[data-theme]:root body :is(.metric,.card,.metric-card,.stat,.summary-card,.summary-strip) :is(span,small,p,label) { color:var(--t-muted); }
+:root[data-theme]:root body :is(.metric,.card,.metric-card,.stat,.summary-card) :is(strong,b,h3) { color:var(--t-text); }
+:root[data-theme]:root body :is(.eyebrow,.nav-label,.sidebar-label,.card .eyebrow,.metric .eyebrow) { color:var(--t-brand); }
+:root[data-theme]:root body :is(.danger-card,.exception,.alert-card) :is(.eyebrow,span:first-child) { color:var(--t-danger); }
+:root[data-theme]:root body :is(.success-card) :is(.eyebrow,span:first-child) { color:var(--t-brand); }
+:root[data-theme]:root body :is(.sidebar-note,.sidebar-foot,.sidebar-footer) :is(p,span,small,div,b) { color:var(--t-muted); }
+:root[data-theme]:root body :is(.nav-button,.nav-link,.branch-button) :is(span,small,b) { color:var(--t-muted); }
+:root[data-theme]:root body :is(.nav-button.active,.branch-button.active,.division-button.active) :is(span,small,b) { color:var(--t-text); }
+:root[data-theme]:root body :is(.sidebar,aside) :is(.division-button,.session-card) small { color:var(--t-muted); }
+:root[data-theme]:root body .suite-login-app, :root[data-theme]:root body.suite-login-app p { color:var(--t-muted); }
+
+/* Third pass */
+:root[data-theme]:root body > header, :root[data-theme]:root body header[data-surface="dark"] { background:var(--t-bg); border-bottom:1px solid var(--t-line-strong); color:var(--t-text); }
+:root[data-theme]:root body header[data-surface="dark"] small { color:var(--t-muted); }
+:root[data-theme]:root body :is(.task-stats span,.today-stat,.overdue-stat) { background:var(--t-raised); color:var(--t-text); border:1px solid var(--t-line-strong); }
+:root[data-theme]:root body :is(.task-stats span) :is(b,small) { color:inherit; }
+:root[data-theme]:root body .task-stats span.today-stat { background:var(--t-brand-soft); color:var(--t-brand); border-color:var(--t-brand); }
+:root[data-theme]:root body .task-stats span.overdue-stat { background:var(--t-danger-soft); color:var(--t-danger); border-color:var(--t-danger-line); }
+:root[data-theme]:root body :is(.complete-toggle,.empty-check) { background:var(--t-sunken); border:2px solid var(--t-line-strong); color:var(--t-brand); }
+:root[data-theme]:root body :is(.complete-toggle):hover { border-color:var(--t-brand); background:var(--t-brand-soft); }
+:root[data-theme]:root body .task-item.completed { opacity:.75; }
+:root[data-theme]:root body :is(.task-item.low,.task-item.medium,.task-item.high) span.priority { color:var(--t-text); }
+:root[data-theme]:root body :is(.task-item) span.priority { background:var(--t-raised); border:1px solid var(--t-line-strong); color:var(--t-text); }
+:root[data-theme]:root body :is(.task-item.high) span.priority { color:var(--t-warn); border-color:var(--t-warn-line); }
+:root[data-theme]:root body :is(.task-item.medium) span.priority { color:var(--t-info); border-color:var(--t-info-line); }
+:root[data-theme]:root body :is(.task-item.low) span.priority { color:var(--t-muted); }
+
+/* Sidebars: every line readable; eyebrows stay brand-coloured */
+:root[data-theme]:root body :is(aside.sidebar,.sidebar) :is(span,small,p,b,strong,div,label):not(.nav-label):not(.eyebrow):not(.sidebar-label) { color:var(--t-text); }
+:root[data-theme]:root body :is(aside.sidebar,.sidebar) :is(small,.nav-note) { color:var(--t-muted); }
+:root[data-theme]:root body :is(aside.sidebar,.sidebar) :is(.nav-label,.sidebar-label,.eyebrow) { color:var(--t-brand); }
+:root[data-theme]:root body :is(.session-card,.batch-card,.sidebar-note) { border:1px solid var(--t-line); background:var(--t-surface); }
+
+/* Match-state colours (stock matrix, review rows, legends) */
+:root[data-theme]:root body :is(.mismatch,.entry.mismatch,td.mismatch,tr.mismatch td) { background:var(--t-danger-soft); color:var(--t-danger); border-color:var(--t-danger-line); }
+:root[data-theme]:root body :is(.pending,.entry.pending,td.pending,tr.pending td) { background:var(--t-warn-soft); color:var(--t-warn); border-color:var(--t-warn-line); }
+:root[data-theme]:root body :is(.match,.entry.match,td.match,.ok,.entry.ok) { background:var(--t-brand-soft); color:var(--t-brand); border-color:var(--t-brand-line); }
+:root[data-theme]:root body :is(.mismatch,.pending,.match,.entry) :is(input,span,b,strong) { color:inherit; background:transparent; }
+:root[data-theme]:root body :is(.entry,.typedcell,.typedamount) { background:var(--t-sunken); border:1px solid var(--t-line-strong); color:var(--t-text); }
+:root[data-theme]:root body .hqpanel, :root[data-theme]:root body .hqmatrix { background:var(--t-surface); border-color:var(--t-brand); }
+:root[data-theme]:root body .typetag, :root[data-theme]:root body .hqkey { background:var(--t-brand-soft); color:var(--t-brand); border:1px solid var(--t-brand); }
+
+/* Fourth pass: stock state colours use !important in stock.css */
+:root[data-theme]:root body.stock-app :is(.mismatch,.entry.mismatch,td.mismatch,tr.mismatch td) { background:var(--t-danger-soft) !important; color:var(--t-danger); border-color:var(--t-danger-line); }
+:root[data-theme]:root body.stock-app :is(.pending,.entry.pending,td.pending,tr.pending td) { background:var(--t-warn-soft) !important; color:var(--t-warn); border-color:var(--t-warn-line); }
+:root[data-theme]:root body.stock-app :is(.match,.entry.match,td.match,tr.match td) { background:var(--t-brand-soft) !important; color:var(--t-brand); border-color:var(--t-brand-line); }
+:root[data-theme]:root body.stock-app .legend span { border:1px solid currentColor; }
+:root[data-theme]:root body.stock-app .toolbar { background:transparent; border:0; }
+:root[data-theme]:root body :is(.badge,.nav-badge,.nav-badge.ok-badge,.count-badge) { background:var(--t-raised); color:var(--t-text); border:1px solid var(--t-line-strong); }
+:root[data-theme]:root body :is(.badge.danger,.danger-badge,.nav-badge.danger-badge) { background:var(--t-danger-soft); color:var(--t-danger); border-color:var(--t-danger-line); }
+:root[data-theme]:root body :is(.ok-badge) { background:var(--t-brand-soft); color:var(--t-brand); border-color:var(--t-brand-line); }
+
+/* Theme switch: round icon button (sun = go light, moon = go dark). */
+:root[data-theme]:root body .theme-toggle {
+  display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto;
+  width:40px; height:40px; min-width:40px; padding:0; border-radius:50%;
+  background:var(--t-raised); color:var(--t-text); border:1px solid var(--t-line-strong); cursor:pointer;
+}
+:root[data-theme]:root body .theme-toggle:hover { background:var(--t-hover); border-color:var(--t-brand); color:var(--t-brand); }
+:root[data-theme]:root body .theme-toggle svg { display:block; pointer-events:none; }
+:root[data-theme]:root body .theme-toggle-corner { position:fixed; top:18px; right:18px; z-index:5; }
+
+/* Highlighted summary cards and hero panels: tinted surface, brand border, normal text colours. */
+:root[data-theme]:root body :is(.metric.accent,.metric-card.accent,.detail-hero,.party-detail-hero) {
+  background:var(--t-brand-soft); background-image:none; border:1px solid var(--t-brand); color:var(--t-text); box-shadow:none;
+}
+:root[data-theme]:root body :is(.metric.accent,.metric-card.accent,.detail-hero,.party-detail-hero) :is(strong,h1,h2,h3,h4,b,div,p,span,li) { color:var(--t-text); }
+:root[data-theme]:root body :is(.metric.accent,.metric-card.accent,.detail-hero,.party-detail-hero) :is(small,.label,.sub,.code,.eyebrow,.muted,.detail-stats span) { color:var(--t-muted); }
+:root[data-theme]:root body :is(.detail-hero,.party-detail-hero) :is(.btn,.button,button:not(.primary)) { background:var(--t-raised); color:var(--t-text); border:1px solid var(--t-line-strong); }
+:root[data-theme]:root body :is(.detail-hero-head) { background:transparent; border:0; }
+:root[data-theme]:root body :is([data-surface="dark"],header[data-surface="dark"]) :is(strong,h1,h2,h3,b) { color:var(--t-text); }
+:root[data-theme]:root body :is([data-surface="dark"]) small { color:var(--t-muted); }
+:root[data-theme]:root body :is(.summary-strip,.danger-section,.section-intro) :is(div,span,strong,p) { background:transparent; }
+:root[data-theme]:root body :is(.summary-strip,.section-intro) :is(span,small,label) { color:var(--t-muted); }
+:root[data-theme]:root body :is(.summary-strip,.section-intro) :is(strong,b) { color:var(--t-text); }
+:root[data-theme]:root body.invoice-app .sidebar :is(#batch-name,#session-cleared-count,#session-cleared-value) { color:var(--t-text); }
+
+/* Audit fixes (round 1) */
+:root[data-theme]:root body.hub-app .header-actions :is(button,#dataLocation,#logout,#changePassword,#appearanceMode),
+:root[data-theme]:root body.hub-app .cleanup-actions :is(button,#undoTodo) { background:var(--t-raised); color:var(--t-text); border:1px solid var(--t-line-strong); }
+:root[data-theme]:root body.hub-app .header-actions .today { background:transparent; border:0; }
+:root[data-theme]:root body.hub-app .header-actions .theme-toggle { border-radius:50%; }
+:root[data-theme]:root body.hub-app .cleanup-actions #openTodoList { background:var(--t-brand); color:var(--t-brand-ink); border:1px solid var(--t-brand); }
+:root[data-theme]:root body.hub-app .calendar-day b { background:var(--t-brand); color:var(--t-brand-ink); border:1px solid var(--t-brand); }
+:root[data-theme]:root body.hub-app .calendar-day.today b { background:var(--t-text); color:var(--t-bg); border-color:var(--t-text); }
+:root[data-theme]:root body :is(.table-footer,.pagination-bar,.party-meta,.login-points,.exception-card,.page-info) :is(span,small) { color:var(--t-muted); }
+:root[data-theme]:root body :is(.table-footer,.pagination-bar) span:not(.page-button) { background:transparent; border:0; }
+:root[data-theme]:root body :is(.tab,.tab.active) > span { background:var(--t-raised); color:var(--t-text); border:1px solid var(--t-line-strong); }
+:root[data-theme]:root body .exception-card > span:first-child { color:var(--t-danger); }
+:root[data-theme]:root body.stock-app .gpresults span { color:var(--t-muted); }
+:root[data-theme]:root body.stock-app .gpresults strong { color:var(--t-text); }
+
+:root[data-theme]:root body.hub-app .header-actions :is(button,#dataLocation,#logout,#changePassword):hover,
+:root[data-theme]:root body.hub-app .cleanup-actions button:not(#openTodoList):hover { background:var(--t-hover); border-color:var(--t-brand); color:var(--t-text); }
+:root[data-theme]:root body.hub-app .cleanup-actions #openTodoList:hover { background:var(--t-brand-hover); border-color:var(--t-brand-hover); color:var(--t-brand-ink); }
+:root[data-theme]:root body.hub-app .header-actions #appearanceMode { width:40px; height:40px; padding:0; border-radius:50%; }
+
+/* Audit fixes (round 2, independent review) */
+:root[data-theme] { background:var(--t-bg); }
+:root[data-theme]:root body :is(input[type="checkbox"],input[type="radio"],input[type="range"],progress) { accent-color:var(--t-brand-fill); }
+:root[data-theme]:root body input[type="date"]::-webkit-calendar-picker-indicator,
+:root[data-theme]:root body input[type="month"]::-webkit-calendar-picker-indicator { background:transparent; border-radius:4px; cursor:pointer; }
+:root[data-theme="dark"]:root body input::-webkit-calendar-picker-indicator { filter:invert(1); }
+:root[data-theme]:root body tr { background:transparent; }
+:root[data-theme]:root body tr:hover td { background:var(--t-hover); }
+:root[data-theme]:root body tr.selected :is(td,th), :root[data-theme]:root body tr.selected-row :is(td,th) { background:var(--t-selected); }
+:root[data-theme]:root body :is(tr.selected,tr.selected-row) td:first-child { box-shadow:inset 3px 0 var(--t-brand); }
+:root[data-theme]:root body :is(.nav-button,.tab,.branch-button,.section-button,.division-button,.party-card,button).active:hover { background:var(--t-brand-soft); border-color:var(--t-brand); color:var(--t-text); }
+:root[data-theme]:root body :is(button.party-card.active,.party-card.active) { background:var(--t-brand-soft); border:1px solid var(--t-brand); box-shadow:inset 3px 0 var(--t-brand); }
+
+/* Dialogs, popovers and small leftovers */
+:root[data-theme]:root body .day-popover { background:var(--t-raised); color:var(--t-text); border:1px solid var(--t-line-strong); }
+:root[data-theme]:root body .day-popover header small { color:var(--t-muted); }
+:root[data-theme]:root body .day-popover :is(.day-tasks > li,.day-tasks li,.day-tasks li > div) { background:var(--t-surface); color:var(--t-text); border-color:var(--t-line); }
+:root[data-theme]:root body .day-popover .day-tasks li { border:1px solid var(--t-line); }
+:root[data-theme]:root body .day-popover :is(small,.muted,span) { color:var(--t-muted); }
+:root[data-theme]:root body :is(.day-close) { background:var(--t-raised); color:var(--t-text); border:1px solid var(--t-line-strong); }
+:root[data-theme]:root body :is(.password-dialog,.modal,dialog) :is(button.primary,button[type="submit"],.btn.primary) { background:var(--t-brand); color:var(--t-brand-ink); border:1px solid var(--t-brand); }
+:root[data-theme]:root body :is(.complete-toggle) span { background:transparent; color:var(--t-brand); }
+:root[data-theme]:root body :is(#editBadge) { color:var(--t-brand); background:var(--t-brand-soft); border:1px solid var(--t-brand-line); border-radius:999px; padding:3px 12px; font-weight:700; }
+:root[data-theme]:root body :is(#cancelEdit,#saveTask) { min-height:40px; }
+:root[data-theme]:root body :is(.task-tabs button span,.task-tabs .count,.count-pill) { background:var(--t-raised); color:var(--t-text); border:1px solid var(--t-line-strong); }
+:root[data-theme]:root body :is(.sidebar-foot) { background:var(--t-surface); border:1px solid var(--t-line); }
+:root[data-theme]:root body :is(.exception-card) { background:var(--t-surface); }
+:root[data-theme]:root body :is(.hint,.key-help,.import-meta,.import-sub,.import-summary small,.notice-text,.section-note,.notice span) { color:var(--t-muted); }
+:root[data-theme]:root body.payment-app .login-points span, :root[data-theme]:root body :is(.login-points span) { background:var(--t-raised); border:1px solid var(--t-line-strong); color:var(--t-text); border-radius:999px; padding:4px 10px; }
+:root[data-theme]:root body #storageNote { color:var(--t-muted); }
+:root[data-theme]:root body :is(#storageNote.error,.storage-error) { background:var(--t-danger-soft); border:1px solid var(--t-danger-line); color:var(--t-danger); border-radius:10px; padding:8px 12px; }
+
+/* Shape and spacing consistency (Invoice, Branch, Stock) */
+:root[data-theme]:root body.invoice-app .topbar { border-radius:14px; }
+:root[data-theme]:root body.invoice-app .search-box { background:var(--t-sunken); border:1px solid var(--t-line-strong); border-radius:11px; }
+:root[data-theme]:root body.invoice-app .search-box input { background:transparent; border:0; outline:0; box-shadow:none; }
+:root[data-theme]:root body.invoice-app .search-box:focus-within { border-color:var(--t-brand); outline:2px solid var(--t-brand); outline-offset:1px; }
+:root[data-theme]:root body :is(.sidebar .session-card button,#logout-button,.rename-button,.session-card .button,#renameBranches) { border-radius:8px; min-height:28px; }
+:root[data-theme]:root body.stock-app :is(.toolbar,.hqpanel > header,.section-intro,#saveinfo) { padding:12px 16px; border-radius:12px; }
+:root[data-theme]:root body.stock-app :is(.toolbar) { background:transparent; border:0; padding:8px 0; }
+:root[data-theme]:root body.stock-app :is(.panel > h2,.panel > h1) { background:transparent; border:0; padding:0; }
+:root[data-theme]:root body.hub-app, :root[data-theme]:root body.hub-app .welcome-bar { border-color:var(--t-line); }
+:root[data-theme]:root body .sync-banner :is(span,small,p) { color:var(--t-muted); }
+
+/* ===== 1.0.44 GP & Stock navigation, dashboard, charts ===== */
+:root[data-theme="dark"] { --c1:#3fdc9f; --c2:#7cc4ff; --c3:#f4c95d; --c4:#ff8d83; --c5:#c4a5ff; --c6:#ff9fd2; --c7:#9be15d; --c8:#ffb26b; --c9:#6fe0e0; --c10:#d0d0d0; }
+:root[data-theme="light"] { --c1:#106584; --c2:#a3362d; --c3:#7d5200; --c4:#2f7a3d; --c5:#6b3fa0; --c6:#b0306b; --c7:#4a5f61; --c8:#b25a00; --c9:#00796b; --c10:#3b3b3b; }
+:root[data-theme]:root body.stock-app .topnav { border-bottom:2px solid var(--t-line); }
+:root[data-theme]:root body.stock-app .topnav .areas button { background:var(--t-surface); color:var(--t-text); border:1px solid var(--t-line); border-bottom:3px solid var(--t-line); }
+:root[data-theme]:root body.stock-app .topnav .areas button:hover { background:var(--t-hover); }
+:root[data-theme]:root body.stock-app .topnav .areas button.active { background:var(--t-selected); color:var(--t-text); border-color:var(--t-brand-line); border-bottom-color:var(--t-brand); }
+:root[data-theme]:root body.stock-app .navbadge { background:var(--t-danger); color:var(--t-bg); }
+:root[data-theme]:root body.stock-app .monthbar label,:root[data-theme]:root body.stock-app .monthbar button { color:var(--t-text); }
+:root[data-theme]:root body.stock-app .monthbar button:not(.linkbtn) { background:var(--t-surface); border:1px solid var(--t-line-strong); }
+:root[data-theme]:root body.stock-app .linkbtn { color:var(--t-link) !important; }
+:root[data-theme]:root body.stock-app .subnav button { background:var(--t-surface); color:var(--t-text); border:1px solid var(--t-line-strong); }
+:root[data-theme]:root body.stock-app .subnav button:hover { background:var(--t-hover); }
+:root[data-theme]:root body.stock-app .subnav button.active { background:var(--t-brand-fill); color:var(--t-brand-ink); border-color:var(--t-brand-fill); }
+:root[data-theme]:root body.stock-app .devpanel.hasdev { border-color:var(--t-danger-line); }
+:root[data-theme]:root body.stock-app .devpanel.nodev { border-color:var(--t-brand-line); }
+:root[data-theme]:root body.stock-app .devstat { border-color:var(--t-line-strong); background:var(--t-surface); color:var(--t-text); }
+:root[data-theme]:root body.stock-app .devstat.bad { border-color:var(--t-danger-line); background:var(--t-danger-soft); color:var(--t-danger); }
+:root[data-theme]:root body.stock-app .devstat.ok { border-color:var(--t-brand-line); background:var(--t-brand-soft); color:var(--t-brand); }
+:root[data-theme]:root body.stock-app .allgood { color:var(--t-brand); }
+:root[data-theme]:root body.stock-app .eyebrow { color:var(--t-muted); font-size:12px; letter-spacing:.08em; font-weight:700; }
+:root[data-theme]:root body.stock-app .serieschip { background:var(--t-surface); color:var(--t-text); border:1px solid var(--t-line-strong); }
+:root[data-theme]:root body.stock-app .serieschip.on { background:var(--t-selected); border-color:var(--t-brand-line); }
+:root[data-theme]:root body.stock-app .linechart .gridline { stroke:var(--t-line); }
+:root[data-theme]:root body.stock-app .linechart .gridline.zero { stroke:var(--t-line-strong); }
+:root[data-theme]:root body.stock-app .linechart text { fill:var(--t-muted); }
+:root[data-theme]:root body.stock-app .linechart circle { stroke:var(--t-surface); stroke-width:1.5; }
+:root[data-theme]:root body.stock-app .chartempty { border-color:var(--t-line-strong); color:var(--t-muted); background:var(--t-sunken); }
+:root[data-theme]:root body.stock-app .checkpill,:root[data-theme]:root body.stock-app .filterblock h3,:root[data-theme]:root body.stock-app .chartcontrols label { color:var(--t-text); }
+:root[data-theme]:root body.stock-app dialog#relabelDialog { background:var(--t-surface); color:var(--t-text); border:2px solid var(--t-line-strong); }
+:root[data-theme]:root body.stock-app dialog#relabelDialog::backdrop { background:var(--t-scrim); }
+:root[data-theme]:root body.stock-app .devtable .rowactions button { background:var(--t-surface); color:var(--t-text); border:1px solid var(--t-line-strong); }
+:root[data-theme]:root body.stock-app .subnav button.subexport { background:var(--t-brand-fill); color:var(--t-brand-ink); border-color:var(--t-brand-fill); }
+:root[data-theme]:root body.stock-app :is(.dev-close,.dev-missing) { background:var(--t-raised) !important; color:var(--t-muted) !important; border:1px solid var(--t-line); }
+:root[data-theme]:root body.stock-app .dev-review { background:var(--t-warn-soft) !important; color:var(--t-warn) !important; border:1px solid var(--t-warn-line); }
+:root[data-theme]:root body.stock-app .dev-major { background:var(--t-danger-soft) !important; color:var(--t-danger) !important; border:1px solid var(--t-danger-line); }
+/* dropdowns: brand-tinted, with chevron, same in both themes */
+:root[data-theme="dark"] body.stock-app select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%233fdc9f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+:root[data-theme="light"] body.stock-app select { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23106584' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+:root[data-theme]:root body.stock-app select { background-color:var(--t-brand-soft); color:var(--t-text); border:1px solid var(--t-brand-line); }
+:root[data-theme]:root body.stock-app select:hover { border-color:var(--t-brand); background-color:var(--t-selected); }
+:root[data-theme]:root body.stock-app select:focus { border-color:var(--t-brand); outline:2px solid var(--t-brand); outline-offset:1px; }
+:root[data-theme]:root body.stock-app select option { background:var(--t-surface); color:var(--t-text); }
+:root[data-theme]:root body.stock-app .monthbar input[type=month] { background:var(--t-brand-soft); border:1px solid var(--t-brand-line); color:var(--t-text); font-weight:600; }
+:root[data-theme]:root body.stock-app .monthbar input[type=month]:hover { border-color:var(--t-brand); }
+:root[data-theme="dark"] body.stock-app .monthbar input[type=month] { color-scheme:dark; }
+:root[data-theme]:root body.stock-app select { background-repeat:no-repeat !important; background-position:right 12px center !important; background-size:12px 8px !important; }
+:root[data-theme]:root body.stock-app .topnav .areas button svg { color:var(--t-brand); }
+:root[data-theme]:root body.stock-app .topnav .areas button.active svg { color:var(--t-text); }
+:root[data-theme]:root body :is(.empty-state,.empty-state > div) { background:var(--t-surface); color:var(--t-muted); border-color:var(--t-line); }
+:root[data-theme]:root body .empty-state strong { color:var(--t-text); }
+:root[data-theme]:root body :is(.today-task-empty,.empty-tasks,.empty-tasks > div) { background:var(--t-surface); color:var(--t-muted); border-color:var(--t-line); }
+:root[data-theme]:root body :is(.today-task-empty strong,.empty-tasks strong) { color:var(--t-text); }
+:root[data-theme]:root body.receivables-app :is(.ageing-rows,.ag-input) { background:var(--t-sunken); color:var(--t-text); border-color:var(--t-line-strong); }
+:root[data-theme]:root body.receivables-app .ageing-row.active .ag-input { border-color:var(--t-brand); outline:2px solid var(--t-brand); outline-offset:1px; }
+:root[data-theme]:root body.receivables-app .ag-input[readonly] { background:transparent; border-color:transparent; }
+:root[data-theme]:root body.receivables-app .ageing-preview { color:var(--t-muted); }
+:root[data-theme]:root body.receivables-app .ageing-preview strong { color:var(--t-text); }
+
+/* ---- Keyboard navigation (suite-keys.js): one consistent focus language ---- */
+:root[data-theme] body [data-kbd-item]:focus { outline:none !important; }
+:root[data-theme] body [data-kbd-item] { transition:box-shadow .22s ease,background-color .22s ease; }
+:root[data-theme] body [data-kbd-item]:focus-visible { outline:none !important; outline-offset:0 !important; background:var(--t-brand-soft); color:var(--t-text); box-shadow:inset 0 -3px 0 var(--t-brand) !important; position:relative; z-index:1; }
+:root[data-theme] body .kbd-zone-on { box-shadow:none !important; outline:none !important; }
+:root[data-theme]:root body [data-kbd-item]:focus,:root[data-theme]:root body [data-kbd-item]:focus-visible { outline:none !important; }
+:root[data-theme] body :is(.nav-button,.nav button,.division-button,#nav button)[data-kbd-item]:focus-visible { border-radius:10px; }
+:root[data-theme] body dialog.suite-keys-help { width:min(520px,92vw); padding:22px 24px; border:1px solid var(--t-brand-line); border-radius:16px; background:var(--t-surface); color:var(--t-text); }
+:root[data-theme] body dialog.suite-keys-help::backdrop { background:rgba(0,0,0,.55); }
+:root[data-theme] body dialog.suite-keys-help h2 { margin:0 0 14px; font-size:18px; color:var(--t-text); }
+:root[data-theme] body .suite-keys-rows { display:grid; gap:2px; max-height:62vh; overflow:auto; }
+:root[data-theme] body .suite-keys-rows > div { display:grid; grid-template-columns:150px 1fr; gap:14px; align-items:center; padding:7px 4px; border-bottom:1px solid var(--t-line); font-size:13px; }
+:root[data-theme] body .suite-keys-rows kbd { justify-self:start; padding:3px 9px; border:1px solid var(--t-brand-line); border-radius:7px; background:var(--t-brand-soft); color:var(--t-text); font:700 12px/1.3 inherit; font-family:inherit; white-space:nowrap; }
+:root[data-theme] body .suite-keys-rows span { color:var(--t-muted); }
+:root[data-theme] body .suite-keys-close { margin-top:16px; height:36px; padding:0 16px; border:1px solid var(--t-brand-line); border-radius:10px; background:var(--t-brand-soft); color:var(--t-text); font-weight:700; cursor:pointer; }
+
+/* Invoice Clearing: Invoice Series tool and clear-dialog bill number */
+:root[data-theme]:root body.invoice-app .series-intro p, :root[data-theme]:root body.invoice-app .bill-help { color:var(--t-muted); }
+:root[data-theme]:root body.invoice-app .series-form label, :root[data-theme]:root body.invoice-app .bill-field label { color:var(--t-muted); }
+:root[data-theme]:root body.invoice-app .series-form input { background:var(--t-sunken); color:var(--t-text); border:1px solid var(--t-line-strong); }
+:root[data-theme]:root body.invoice-app .series-form input:focus { border-color:var(--t-brand); outline:2px solid var(--t-brand); outline-offset:1px; box-shadow:none; }
+:root[data-theme]:root body.invoice-app .bill-input { background:var(--t-sunken); border:1px solid var(--t-line-strong); }
+:root[data-theme]:root body.invoice-app .bill-input:focus-within { border-color:var(--t-brand); outline:2px solid var(--t-brand); outline-offset:1px; box-shadow:none; }
+:root[data-theme]:root body.invoice-app .bill-prefix { background:var(--t-brand-soft); color:var(--t-text); border-right:1px solid var(--t-brand-line); }
+:root[data-theme]:root body.invoice-app .bill-input input { background:transparent; color:var(--t-text); border:0; outline:0; }
+:root[data-theme]:root body.invoice-app .series-actions button { background:var(--t-raised); color:var(--t-text); border:1px solid var(--t-line-strong); }
+:root[data-theme]:root body.invoice-app .series-actions button:hover { background:var(--t-brand-soft); border-color:var(--t-brand); }
+:root[data-theme]:root body.invoice-app .series-panel .empty-state { background:var(--t-sunken); color:var(--t-text); }
+:root[data-theme]:root body.invoice-app #clear-dialog dl { background:var(--t-sunken); border:1px solid var(--t-line); }
+:root[data-theme]:root body.invoice-app #clear-dialog dt { color:var(--t-muted); }
+:root[data-theme]:root body.invoice-app #clear-dialog dd { color:var(--t-text); }
+
+/* Non MGP Transit */
+:root[data-theme]:root body.invoice-app .transit-filters select,
+:root[data-theme]:root body.invoice-app .transit-date-input { background:var(--t-raised); color:var(--t-text); border-color:var(--t-line); }
+:root[data-theme]:root body.invoice-app .transit-head h1 { color:var(--t-text); }
+:root[data-theme]:root body.invoice-app .transit-total-row td { border-top-color:var(--t-line-strong); }
+:root[data-theme="dark"]:root body.invoice-app .kind-same { color:#6fcf9a; }
+:root[data-theme="dark"]:root body.invoice-app .kind-transit { color:#f0b24a; }
+:root[data-theme="dark"]:root body.invoice-app .kind-earlier { color:#f08a8a; }
+:root[data-theme]:root body.invoice-app #transit-dialog dl { background:var(--t-sunken); border:1px solid var(--t-line); color:var(--t-text); }
+:root[data-theme]:root body.invoice-app #transit-dialog dt { color:var(--t-muted); }
+
+/* ===========================================================================
+   Block redesign (1.0.54): flat ruled "block" look for the whole suite.
+   Archivo (headings) / Inter (body) / Geist Mono (labels) are bundled in src/fonts so it works offline.
+   Square corners, 1px hairlines, one blue accent, inversion on hover. No animation, blur or shadow. */
+@font-face { font-family:"Archivo"; src:url("fonts/archivo.woff2") format("woff2"); font-weight:100 900; font-stretch:62% 125%; font-style:normal; font-display:swap; }
+@font-face { font-family:"Inter"; src:url("fonts/inter.woff2") format("woff2"); font-weight:100 900; font-style:normal; font-display:swap; }
+@font-face { font-family:"Geist Mono"; src:url("fonts/geist-mono-400.woff2") format("woff2"); font-weight:400; font-style:normal; font-display:swap; }
+@font-face { font-family:"Geist Mono"; src:url("fonts/geist-mono-500.woff2") format("woff2"); font-weight:500; font-style:normal; font-display:swap; }
+@font-face { font-family:"Geist Mono"; src:url("fonts/geist-mono-700.woff2") format("woff2"); font-weight:600 800; font-style:normal; font-display:swap; }
+
+:root[data-theme="dark"] {
+  --t-bg:#121316; --t-surface:#121316; --t-raised:#17181c; --t-sunken:#08080a;
+  --t-line:#2b2d32; --t-line-strong:#62646a;
+  --t-text:#f2f1ee; --t-muted:#a8a7a4; --t-placeholder:#7b7a7e; --t-link:#74aaff;
+  --t-brand:#74aaff; --t-brand-ink:#0b0b0c; --t-brand-hover:#ffffff; --t-brand-fill:#f2f1ee;
+  --t-brand-soft:#16233d; --t-brand-line:#3c63a6;
+  --t-danger:#ff6259; --t-danger-soft:#2c1513; --t-danger-line:#8f4640;
+  --t-warn:#f2a516; --t-warn-soft:#2a2210; --t-warn-line:#86641a;
+  --t-info:#7fb0ff; --t-info-line:#3c63a6;
+  --t-hover:#1e2024; --t-selected:#14243f; --t-self:#1a1c20; --t-scrim:rgba(6,6,7,.84);
+}
+:root[data-theme="light"] {
+  --t-bg:#f2f1ee; --t-surface:#f2f1ee; --t-raised:#faf9f7; --t-sunken:#e9e8e4;
+  --t-line:#d3d2cf; --t-line-strong:#86868a;
+  --t-text:#101014; --t-muted:#5b5b5f; --t-placeholder:#7d7d81; --t-link:#1659c4;
+  --t-brand:#1659c4; --t-brand-ink:#f2f1ee; --t-brand-hover:#2c2c33; --t-brand-fill:#101014;
+  --t-brand-soft:#e0e8f6; --t-brand-line:#8aa8de;
+  --t-danger:#b3261e; --t-danger-soft:#f6dddb; --t-danger-line:#d9a09b;
+  --t-warn:#8a5800; --t-warn-soft:#f4e6c6; --t-warn-line:#d1b26a;
+  --t-info:#1659c4; --t-info-line:#9ab6e8;
+  --t-hover:#e6e5e1; --t-selected:#dbe5f6; --t-self:#e9e8e4; --t-scrim:rgba(16,16,20,.52);
+}
+:root[data-theme] {
+  --ui-font:"Inter","Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+  --font-display:"Archivo","Inter","Segoe UI",system-ui,sans-serif;
+  --font-mono:"Geist Mono",ui-monospace,Consolas,"Courier New",monospace;
+}
+
+/* Shape: nothing is rounded. */
+:root[data-theme] *, :root[data-theme] *::before, :root[data-theme] *::after { border-radius:0 !important; }
+:root[data-theme] ::selection { background:#2d81ff; color:#fff; }
+:root[data-theme] :focus-visible { outline:2px solid var(--t-link); outline-offset:2px; }
+
+/* Type */
+:root[data-theme] body { font-family:var(--ui-font); -webkit-font-smoothing:antialiased; font-variant-numeric:tabular-nums; }
+:root[data-theme] button, :root[data-theme] input, :root[data-theme] select, :root[data-theme] textarea { font-family:var(--ui-font); }
+:root[data-theme] h1, :root[data-theme] h2, :root[data-theme] h3,
+:root[data-theme] .brand-row strong, :root[data-theme] header strong {
+  font-family:var(--font-display) !important; font-weight:560 !important; letter-spacing:-.03em !important; line-height:1.05; font-stretch:108%;
+  color:var(--t-text);
+}
+:root[data-theme] h1 { letter-spacing:-.035em !important; }
+
+/* Mono uppercase labels */
+:root[data-theme] .eyebrow, :root[data-theme] .nav-label, :root[data-theme] th,
+:root[data-theme] .nav-badge, :root[data-theme] .badge, :root[data-theme] .pill, :root[data-theme] .chip,
+:root[data-theme] .count-pill, :root[data-theme] .count-badge, :root[data-theme] .source-pill, :root[data-theme] .action-pill,
+:root[data-theme] .hqtag, :root[data-theme] .typetag, :root[data-theme] .danger-badge, :root[data-theme] .ok-badge, :root[data-theme] .credit-badge,
+:root[data-theme] label, :root[data-theme] legend {
+  font-family:var(--font-mono) !important; text-transform:uppercase !important; letter-spacing:.1em !important; font-weight:500 !important;
+}
+:root[data-theme] .eyebrow, :root[data-theme] .nav-label { font-size:11px !important; color:var(--t-muted); }
+:root[data-theme] th { font-size:10.5px !important; font-weight:600 !important; color:var(--t-muted) !important; background:var(--t-sunken) !important; }
+:root[data-theme] label { font-size:10.5px !important; }
+:root[data-theme] .badge, :root[data-theme] .pill, :root[data-theme] .chip, :root[data-theme] .count-pill, :root[data-theme] .count-badge,
+:root[data-theme] .nav-badge, :root[data-theme] .source-pill { font-size:10px !important; letter-spacing:.08em !important; }
+
+/* Buttons, tabs and nav cells */
+:root[data-theme] .button, :root[data-theme] .btn, :root[data-theme] .text-button, :root[data-theme] .page-button, :root[data-theme] .ui-button,
+:root[data-theme] .view-tab, :root[data-theme] .tab, :root[data-theme] .nav-button, :root[data-theme] .category-button, :root[data-theme] .section-button,
+:root[data-theme] .division-button b, :root[data-theme] .statement-btn, :root[data-theme] .linkbtn, :root[data-theme] .clear-button {
+  font-family:var(--font-mono) !important; text-transform:uppercase !important; letter-spacing:.1em !important; font-weight:600 !important;
+}
+:root[data-theme] .button, :root[data-theme] .btn, :root[data-theme] .text-button, :root[data-theme] .ui-button, :root[data-theme] .view-tab,
+:root[data-theme] .tab, :root[data-theme] .page-button, :root[data-theme] .clear-button, :root[data-theme] .statement-btn { font-size:11px !important; }
+:root[data-theme] .division-button b, :root[data-theme] .category-button, :root[data-theme] .nav-button, :root[data-theme] .section-button { font-size:11.5px !important; }
+:root[data-theme] .division-button small, :root[data-theme] .category-button small, :root[data-theme] .nav-button small, :root[data-theme] .view-tab span {
+  font-family:var(--ui-font) !important; text-transform:none !important; letter-spacing:0 !important; font-weight:500 !important;
+}
+
+/* Hover and current = inversion (solid ink, paper text). */
+:root[data-theme] .button:hover:not(:disabled), :root[data-theme] .btn:hover:not(:disabled), :root[data-theme] .text-button:hover:not(:disabled),
+:root[data-theme] .page-button:hover:not(:disabled), :root[data-theme] .ui-button:hover:not(:disabled), :root[data-theme] .view-tab:hover,
+:root[data-theme] .tab:hover, :root[data-theme] .nav-button:hover, :root[data-theme] .category-button:hover, :root[data-theme] .section-button:hover,
+:root[data-theme] .division-button:hover, :root[data-theme] .statement-btn:hover, :root[data-theme] .clear-button:hover:not(:disabled),
+:root[data-theme] .view-tab.active, :root[data-theme] .tab.active, :root[data-theme] .nav-button.active, :root[data-theme] .nav-button[aria-current],
+:root[data-theme] .category-button.active, :root[data-theme] .section-button.active, :root[data-theme] .division-button.active {
+  background:var(--t-brand-fill) !important; color:var(--t-brand-ink) !important; border-color:var(--t-brand-fill) !important;
+}
+:root[data-theme] .button:hover:not(:disabled) *, :root[data-theme] .btn:hover:not(:disabled) *, :root[data-theme] .view-tab:hover *,
+:root[data-theme] .nav-button:hover *, :root[data-theme] .category-button:hover *, :root[data-theme] .division-button:hover *,
+:root[data-theme] .view-tab.active *, :root[data-theme] .nav-button.active *, :root[data-theme] .category-button.active *, :root[data-theme] .division-button.active * {
+  color:inherit !important;
+}
+:root[data-theme] .button.primary, :root[data-theme] .btn.primary, :root[data-theme] .button.settle { background:var(--t-brand-fill); color:var(--t-brand-ink); border-color:var(--t-brand-fill); }
+:root[data-theme] .button.primary:hover:not(:disabled), :root[data-theme] .btn.primary:hover:not(:disabled) { background:var(--t-brand-hover) !important; border-color:var(--t-brand-hover) !important; }
+:root[data-theme] .button.secondary, :root[data-theme] .btn.secondary, :root[data-theme] .button.ghost { background:var(--t-bg); color:var(--t-text); border:1px solid var(--t-line-strong); }
+
+/* Ruled blocks: hairline panels, corner ticks on the main workspace cards. */
+:root[data-theme] .workspace-card, :root[data-theme] .dialog-card { position:relative; border:1px solid var(--t-line) !important; background:var(--t-bg) !important; }
+:root[data-theme] .workspace-card::before, :root[data-theme] .workspace-card::after {
+  content:""; position:absolute; top:-1px; width:11px; height:11px; pointer-events:none; z-index:2;
+  background:linear-gradient(var(--t-line-strong),var(--t-line-strong)) center/1px 11px no-repeat, linear-gradient(var(--t-line-strong),var(--t-line-strong)) center/11px 1px no-repeat;
+}
+:root[data-theme] .workspace-card::before { left:-6px; }
+:root[data-theme] .workspace-card::after { right:-5px; }
+:root[data-theme] table { border-collapse:collapse; }
+:root[data-theme] td { border-color:var(--t-line); }
+:root[data-theme] input, :root[data-theme] select, :root[data-theme] textarea { border:1px solid var(--t-line-strong); background:var(--t-sunken); color:var(--t-text); }
+:root[data-theme] input:focus, :root[data-theme] select:focus, :root[data-theme] textarea:focus { outline:2px solid var(--t-link); outline-offset:0; border-color:var(--t-link); }
+:root[data-theme] .keyboard-hint { font-family:var(--font-mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--t-muted); }
+:root[data-theme] .muted, :root[data-theme] small { color:var(--t-muted); }
+
+/* Controls that carry no shared class (hub header, stock menu, to-do tabs, branch list, chips). */
+:root[data-theme] header button, :root[data-theme] #nav button, :root[data-theme] .task-tabs button, :root[data-theme] .branch-button,
+:root[data-theme] .serieschip, :root[data-theme] .project-open, :root[data-theme] .setting-option, :root[data-theme] .theme-toggle {
+  font-family:var(--font-mono) !important; text-transform:uppercase !important; letter-spacing:.1em !important; font-weight:600 !important; font-size:11px !important;
+}
+:root[data-theme] header button:hover:not(:disabled), :root[data-theme] #nav button:hover, :root[data-theme] .task-tabs button:hover, :root[data-theme] .branch-button:hover,
+:root[data-theme] #nav button.active, :root[data-theme] .task-tabs button.active, :root[data-theme] .branch-button.active, :root[data-theme] .serieschip.on:hover,
+:root[data-theme] .project-card:hover .project-open {
+  background:var(--t-brand-fill) !important; color:var(--t-brand-ink) !important; border-color:var(--t-brand-fill) !important;
+}
+:root[data-theme] #nav button:hover *, :root[data-theme] #nav button.active *, :root[data-theme] .branch-button:hover *, :root[data-theme] .branch-button.active *,
+:root[data-theme] .task-tabs button.active *, :root[data-theme] header button:hover * { color:inherit !important; }
+:root[data-theme] button small, :root[data-theme] .button small, :root[data-theme] .branch-button small, :root[data-theme] .project-card small {
+  font-family:var(--ui-font) !important; text-transform:none !important; letter-spacing:0 !important; font-weight:500 !important; font-size:11.5px !important;
+}
+:root[data-theme] .project-card:hover { background:var(--t-hover) !important; border-color:var(--t-line-strong) !important; }
+:root[data-theme] .project-card strong, :root[data-theme] .project-card b { font-family:var(--font-display); font-weight:560; letter-spacing:-.02em; }
+:root[data-theme] aside button, :root[data-theme] .segmented button, :root[data-theme] .seg button, :root[data-theme] .tabs button, :root[data-theme] .filter-tabs button, :root[data-theme] .segments button {
+  font-family:var(--font-mono) !important; text-transform:uppercase !important; letter-spacing:.1em !important; font-weight:600 !important; font-size:11.5px !important;
+}
+:root[data-theme] aside button:hover:not(:disabled), :root[data-theme] aside button.active, :root[data-theme] .segmented button:hover, :root[data-theme] .segmented button.active,
+:root[data-theme] .seg button.active, :root[data-theme] .tabs button.active, :root[data-theme] .filter-tabs button.active, :root[data-theme] .segments button.active, :root[data-theme] .segments button:hover {
+  background:var(--t-brand-fill) !important; color:var(--t-brand-ink) !important; border-color:var(--t-brand-fill) !important;
+}
+:root[data-theme] aside button:hover *, :root[data-theme] aside button.active * { color:inherit !important; }
+:root[data-theme] .series-actions button { font-family:var(--font-mono) !important; text-transform:uppercase !important; letter-spacing:.08em !important; font-weight:600 !important; font-size:10px !important; }
+:root[data-theme] .series-actions button:hover { background:var(--t-brand-fill) !important; color:var(--t-brand-ink) !important; }
+
+/* Branch Accounting sections and switcher */
+:root[data-theme] .section-nav-button { font-family:var(--font-mono) !important; text-transform:uppercase !important; letter-spacing:.1em !important; font-weight:600 !important; font-size:11.5px !important; background:var(--t-bg); color:var(--t-text); border:1px solid var(--t-line-strong); }
+:root[data-theme] .section-nav-button:hover, :root[data-theme] .section-nav-button.active { background:var(--t-brand-fill) !important; color:var(--t-brand-ink) !important; border-color:var(--t-brand-fill) !important; }
+:root[data-theme] .switch-arrow, :root[data-theme] .switch-select select { background:var(--t-sunken); color:var(--t-text); border:1px solid var(--t-line-strong); }
+:root[data-theme] .switch-arrow:hover:not(:disabled) { background:var(--t-brand-fill); color:var(--t-brand-ink); }
+:root[data-theme] .switch-select span, :root[data-theme] .switch-position, :root[data-theme] .details-help { color:var(--t-muted); }
+/* Hub project cards: keyboard focus is a simple animated bottom border (no outline/frame). */
+:root[data-theme]:root body.hub-app .project-card { transition:box-shadow .22s ease,background-color .22s ease; }
+:root[data-theme]:root body.hub-app .project-card:focus-visible { outline:none !important; outline-offset:0 !important; background:var(--t-brand-soft) !important; box-shadow:inset 0 -3px 0 var(--t-brand) !important; }
+:root[data-theme]:root body.hub-app .slide-tabs button { border:0 !important; border-bottom:2px solid transparent !important; border-radius:0 !important; background:transparent !important; font-size:12px !important; font-weight:700; height:28px; padding:0 12px; }
+:root[data-theme]:root body.hub-app .slide-tabs button[aria-selected="true"] { border-bottom-color:var(--t-brand) !important; color:var(--t-text); }
+:root[data-theme]:root body.hub-app .slide-tabs button:focus-visible { outline:none !important; box-shadow:inset 0 -3px 0 var(--t-brand) !important; }
+:root[data-theme]:root body.hub-app .gp-key { border:0 !important; background:transparent !important; padding:0 !important; height:20px; min-height:0; font-size:11px; font-weight:600; text-transform:none; letter-spacing:0; font-family:inherit; color:var(--t-muted); }
+:root[data-theme]:root body.hub-app .gp-key:focus-visible { outline:none !important; box-shadow:inset 0 -2px 0 var(--t-brand) !important; }
+
+.gp-key.gp-all{font-weight:700}
+
+/* Sundays are dimmed so they read as the day off at a glance (today keeps its full highlight). */
+:root:root body.hub-app .calendar-day.sun:not(.today):not(.outside) { opacity:.55; }
+:root:root body.hub-app .calendar-weekdays span:last-child { opacity:.55; }

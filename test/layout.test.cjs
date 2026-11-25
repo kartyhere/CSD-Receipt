@@ -52,7 +52,7 @@ test('the printed page must be in Courier New Bold: the font is read back from t
 });
 test('the app only takes messages from its own page, prints silently with the chosen copies, keeps no GST number in the list', () => {
   const m = read('src/main.cjs');
-  assert.match(m, /event\.sender !== win\.webContents \|\| event\.senderFrame !== event\.sender\.mainFrame \|\| event\.senderFrame\.url !== PAGE/);
+  assert.match(m, /event\.sender !== win\.webContents \|\| event\.senderFrame !== event\.sender\.mainFrame \|\| !isOurPage\(event\.senderFrame\.url\)/);
   assert.match(m, /silent: true, deviceName: printer, copies/);
   // No printer from Electron: Windows is asked directly, and the Windows print dialog is always offered.
   assert.match(m, /if \(!list\.length\) list = await windowsPrinters\(\);/);
@@ -67,4 +67,21 @@ test('the app only takes messages from its own page, prints silently with the ch
   assert.match(app, /\$\('poInput'\)\.value = ''; \$\('srInput'\)\.value = '';/);   // ready for the next numbers
   assert.ok(!/\bon(click|change|input|keydown)=/.test(read('src/index.html')));
   assert.match(read('src/index.html'), /script-src 'self';/);
+});
+
+test('the app recognises its own page by file path, however Windows writes the address', () => {
+  const path = require('node:path'); const { pageOf } = require('../src/pages.cjs');
+  const w = path.win32, root = 'C:\\Users\\KARTHI~1\\AppData\\Local\\Temp\\2abc\\resources\\app.asar\\src';
+  assert.equal(pageOf('file:///C:/Users/KARTHI~1/AppData/Local/Temp/2abc/resources/app.asar/src/index.html', root, w), 'index.html');
+  assert.equal(pageOf('file:///c:/users/karthi~1/appdata/local/temp/2abc/resources/app.asar/src/index.html', root, w), 'index.html');   // letter case
+  assert.equal(pageOf('file:///C:/Users/KARTHI%7E1/AppData/Local/Temp/2abc/resources/app.asar/src/index.html', root, w), 'index.html'); // escaped ~
+  const spaced = 'C:\\Program Files\\CSD Receipt (copy)\\resources\\app.asar\\src';
+  assert.equal(pageOf('file:///C:/Program%20Files/CSD%20Receipt%20(copy)/resources/app.asar/src/index.html', spaced, w), 'index.html');
+  // Anything else is not our page.
+  assert.equal(pageOf('file:///C:/Users/x/evil/index.html', root, w), '');
+  assert.equal(pageOf('file:///C:/Users/KARTHI~1/AppData/Local/Temp/2abc/resources/app.asar/src/index.html?x=1', root, w), '');
+  assert.equal(pageOf('https://example.com/index.html', root, w), '');
+  assert.equal(pageOf('file:///home/u/app/src/index.html', '/home/u/app/src'), 'index.html');
+  assert.equal(pageOf('file:///home/u/app/src/../other/index.html', '/home/u/app/src'), '');
+  assert.doesNotMatch(read('src/main.cjs'), /senderFrame\.url !== PAGE/);
 });

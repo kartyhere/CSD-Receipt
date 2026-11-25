@@ -1,0 +1,44 @@
+CSD RECEIPT - DESIGN LANGUAGE (copied from Business Operations Hub, 25 Nov 2026)
+================================================================================
+CSD Receipt uses the BOH shared project look: src/shell.css, src/uniform-green-theme.css, src/suite-motion.css,
+src/suite-icons.css, src/suite-polish.css, src/appearance.js and src/fonts are copied unchanged from BOH (kartyhere/BOH, src/).
+Do not edit those copies; put anything specific to CSD Receipt in src/styles.css. Re-copy them from BOH only if Karthik asks.
+The printed page is styled only by src/sheet.css and never by these files.
+
+BOH text follows unchanged:
+
+BUSINESS OPERATIONS HUB - DESIGN LANGUAGE FOR NEW BUILDS  (owner's standing instruction, set at 1.0.73)
+=====================================================================================================
+Every NEW project/page uses the "block design" language (full reference: block-design-website.md, kept in the
+boh-toolkit folder and below in short form). Reference implementation: src/paint/index.html + styles.css + app.js.
+
+Short form
+- Zero border-radius everywhere. 1px hairlines (--line) instead of shadows. Cells share single dividers via the
+  "gap:1px on a --line background" grid.
+- Numbered everything: "01 / Section" eyebrows, "01" on cards and rows. Sticky 48px nav of full-height cells; the active/hover
+  cell INVERTS (--invert-bg / --invert-fg). Hover = inversion, never a tint or glow.
+- Page = centred 1280px column with 1px side rails; each section has a top rule, 11px corner ticks and a sticky mono eyebrow.
+- Type: Archivo 500 headings (tight tracking, ONE accent-coloured word per big heading), Inter body, Geist Mono UPPERCASE for
+  labels / buttons / chips / numbers. Quotes (if ever) Instrument Serif.
+- Colour only through tokens: --bg --bg-raised --bg-sunken --ink --ink-strong --muted --faint --line --line-strong --accent
+  --accent-ink --invert-bg --invert-fg --danger, light + dark via html[data-theme] (appearance.js sets it). Per-item accents:
+  .acc-0..6 (blue, red, violet, amber, teal, pink, green) giving --app / --app-ink.
+- Buttons: mono 11px bold uppercase, 48px high; primary = inverted fill, secondary = 1px --line-strong outline.
+
+House rules that override the reference (do not drop these)
+1. NO blur, backdrop-filter, transitions, animations or keyframes in stylesheets - test/efficiency.test.cjs enforces the 1.0.42
+   efficiency rule. So: hovers are instant, the card top bar simply appears, no blur-in scroll reveals, no marquee. Ask the owner
+   before enabling any motion.
+2. Fonts are bundled offline (src/fonts: archivo, inter, geist-mono 400/500/700). Declare @font-face in the page's own CSS with
+   url("../fonts/...") (see paint/styles.css). Never load fonts from the network (CSP font-src 'self' data:).
+3. CSP: no inline event handlers; external scripts only; run scripts-security-csp.py (release.sh does).
+4. Existing projects (hub, Receivables, Payables, ...) keep their current look until the owner asks for a restyle.
+
+App windows are not websites (owner feedback on Paint Reconciliation, 1.0.76)
+5. A project window uses the block language inside the app layout the other projects use: left sidebar (brand, numbered
+   SECTIONS, "Saved on this computer"), a compact title bar (mono breadcrumb + one small title + month/actions), then working
+   blocks. NO hero headline, NO lead paragraph, NO marketing headings; guidance is one short mono hint line under the table.
+   Big headings with one accent word belong to landing pages only. See src/paint/ for the reference implementation.
+
+PAINT RECONCILIATION FOLLOWS THE SHARED PROJECT SHELL (1.0.80)
+Paint Reconciliation was first built as its own block-style layout and looked different from the other projects. It now loads the same style stack as Receivables (receivables.css, uniform-green-theme.css, suite-icons.css, suite-polish.css) and the same page structure (icon sidebar, title card, metric cards, bordered panels, data tables). paint.css only adds what is specific to Paint. New project windows start from that shell, not from a custom layout. No dark/light toggle button in the window (the suite theme still applies).

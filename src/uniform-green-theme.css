@@ -1,0 +1,321 @@
+@import url("suite-motion.css");
+:root{
+  color-scheme:light;
+  --palette-text:#0E1F1A;--palette-secondary:#1F4A3C;--palette-primary:#22C08A;--palette-accent:#A9E4CE;--palette-surface:#F1FAF6;
+  --ink:#0E1F1A;--muted:#557067;--panel:#fff;--panel2:#F1FAF6;--line:rgba(31,74,60,.17);
+  --brand:#22C08A;--brand2:#1F4A3C;--nav:#12382d;--paper:#fff;--canvas:#F1FAF6;
+  --forest:#1F4A3C;--forest-2:#12382d;--sage:#A9E4CE;--green:#22C08A;--green-dark:#1F4A3C;--green-soft:#dff5ec;
+  --canvas-bg:#F1FAF6;--light-bg:#fff;--light-text:#0E1F1A;--light-muted:#557067;--light-border:#CADBD3;
+  --dark-bg:#1F4A3C;--dark-deep:#12382d;--dark-text:#EAF8F3;--dark-muted:#CFE9DF;--dark-border:#729B89;
+  --mint-bg:#22C08A;--mint-text:#0E1F1A;--mint-muted:#17372d;
+  --success-bg:#DDF5EA;--success-text:#15543F;--warning-bg:#FFF1CF;--warning-text:#745412;--danger-bg:#FCE9E6;--danger-text:#8D352F;--neutral-bg:#EAF2EE;--neutral-text:#405D53;
+  --shadow:0 1px 3px rgba(14,31,26,.10)
+}
+html,body{background:#F1FAF6;color:#0E1F1A}
+body{background-image:radial-gradient(circle at 86% -8%,rgba(169,228,206,.5),transparent 34rem),linear-gradient(145deg,#fff,#F1FAF6)}
+.main-content,main{color:#0E1F1A}
+.muted,.copy small,.login-help,.section-note,.result-count,.category-button small{color:var(--light-muted)}
+.eyebrow,.open,.category-button>strong{color:var(--palette-secondary)}
+input,select,textarea{border-color:rgba(31,74,60,.24);background:#fff;color:#0E1F1A}
+input::placeholder,textarea::placeholder{color:#71877f}
+input:focus,select:focus,textarea:focus{border-color:#22C08A;box-shadow:0 0 0 3px rgba(34,192,138,.19)}
+.button,button{border-color:rgba(31,74,60,.22);background-color:#fff;color:#1F4A3C}
+.button:hover,button:hover{border-color:#22C08A;background-color:#e7f8f1}
+.button.primary,button.primary,.btn.primary,.primary{border-color:#22C08A;background:#22C08A;color:#0E1F1A}
+.button.primary:hover,button.primary:hover,.btn.primary:hover,.primary:hover{border-color:#1ca978;background:#1ca978;color:#0E1F1A}
+.button.secondary,.button.quiet,.secondary button{border-color:rgba(31,74,60,.2);background:#F1FAF6;color:#1F4A3C}
+.sidebar,body>header{border-color:#1F4A3C;background:linear-gradient(180deg,#1F4A3C,#12382d);color:#fff}
+.sidebar::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 30% 0,rgba(169,228,206,.16),transparent 36%)}
+.sidebar>*{position:relative}.brand-mark,.auth-mark,.login-logo,.mark{background:#22C08A;color:#0E1F1A;box-shadow:none}
+.nav-button,.division-button{color:#eaf8f3}.nav-button:hover,.division-button:hover{border-color:rgba(169,228,206,.32);background:rgba(169,228,206,.12);color:#fff}
+.nav-button.active,.division-button.active{border-color:#A9E4CE;background:#A9E4CE;color:#0E1F1A;box-shadow:inset 3px 0 #22C08A}
+.nav-button.active span,.division-button.active small{color:#1F4A3C}.brand strong,.brand-row strong{color:#fff}.brand small,.brand-row span{color:#cfe9df}
+.sidebar-note,.sidebar-footer,.session-card,.db-status{border-color:rgba(169,228,206,.22);color:#eaf8f3}.sidebar-note strong,.sidebar-footer strong,.session-card strong{color:#fff}
+.module,.auth-card,.login-card,.workspace-card,.category-button,.filter-bar,.metric-card,.panel,.daily-toolbar,.party-list-card,.empty-state,.card,dialog,.credentials-dialog,.surface,.party-panel,.detail-panel,.projects-panel,.todo-panel{border-color:rgba(31,74,60,.17);background:#fff;color:#0E1F1A;box-shadow:var(--shadow)}
+.module:hover,.module:focus-visible,.category-button:hover,.category-button.active,.party-list-card:hover,.project-card:hover,.project-card:focus-visible{border-color:#22C08A;background:#f6fcf9}
+.module{--accent:#22C08A;--wash:#dff5ec}.number,.category-icon,.project-number{background:#dff5ec;color:#1F4A3C}
+.status,.source-pill,.action-pill{background:var(--neutral-bg);color:var(--neutral-text);box-shadow:none}.status.matched,.status.paid,.status.cleared,.action-pill.cleared{background:var(--success-bg);color:var(--success-text)}
+.status.overdue,.status.unmatched,.status.not_uploaded,.action-pill.error{background:var(--danger-bg);color:var(--danger-text)}.status.pending,.status.part-paid,.status.needs_review{background:var(--warning-bg);color:var(--warning-text)}
+.metric-card.accent,.party-detail-hero,.detail-hero{border-color:#1F4A3C;background:linear-gradient(135deg,#285f4e,#12382d);color:#fff}
+.metric-card.accent p,.metric-card.accent small,.party-detail-hero p,.detail-hero .code,.detail-hero span{color:#dff5ec}
+.welcome-bar{border-color:rgba(31,74,60,.17);background:rgba(255,255,255,.82);color:#0E1F1A}.welcome-bar .mark{background:linear-gradient(145deg,#22C08A,#1ca978);color:#0E1F1A}
+.header-actions button,#dataLocation,#logout,#changePassword{border-color:rgba(31,74,60,.22);background:#fff;color:#1F4A3C}
+.header-actions button:hover,#dataLocation:hover,#logout:hover,#changePassword:hover{border-color:#22C08A;background:#e7f8f1;color:#1F4A3C}
+.project-card{border-color:rgba(31,74,60,.17);background:#fff}.project-open{background:#dff5ec;color:#1F4A3C}.local-note{color:#557067}.online-dot{background:#22C08A;box-shadow:0 0 0 5px rgba(34,192,138,.18)}
+.todo-form{border-color:rgba(31,74,60,.2);background:linear-gradient(145deg,#fff,#e7f8f1)}.task-tabs{border-color:rgba(31,74,60,.17);background:#F1FAF6}
+.task-tabs button.active{background:#fff;color:#1F4A3C}.task-tabs span{background:#dff5ec}.task-item{border-color:rgba(31,74,60,.15);background:#fff}.task-item.overdue{border-color:#e2b6aa;background:#fff8f5}
+.auth-screen,.login-screen,.login-shell{background:transparent}
+body:has(.login-shell),body:has(.auth-screen),body:has(.login-screen){background:radial-gradient(circle at 15% 12%,rgba(169,228,206,.72),transparent 34rem),radial-gradient(circle at 92% 88%,rgba(34,192,138,.18),transparent 30rem),#F1FAF6}
+.login-intro,.intro{color:#0E1F1A}.login-intro>p:not(.eyebrow),.login-intro .login-points span,.intro>p:not(.eyebrow){color:#557067}
+.module-list span{border-color:rgba(31,74,60,.24);background:rgba(169,228,206,.28);color:#1F4A3C}
+.auth-card,.login-card{border-color:rgba(31,74,60,.17);background:rgba(255,255,255,.96);box-shadow:none}
+.auth-card label,.login-card label{color:#1F4A3C}.security-note{color:#557067}
+.workspace-toolbar,.pagination-bar,.table-wrap{border-color:rgba(31,74,60,.17)}.view-tab{color:#557067}.view-tab:hover,.view-tab.active{background:#dff5ec;color:#1F4A3C}
+.search-box{border-color:#72b69d;color:#1F4A3C}.notice,.cleared-match,.privacy-note,.gpnote{border-color:#A9E4CE;background:#e7f8f1;color:#1F4A3C}
+table,th,td{border-color:rgba(31,74,60,.16)}th,.data-table th,.bounded thead th,.transfermatrix th:first-child{background:#dff5ec;color:#1F4A3C}
+td,.data-table td{border-color:rgba(31,74,60,.14);color:#0E1F1A}tbody tr:nth-child(even),.data-table tbody tr:nth-child(even){background:#f7fcfa}
+tbody tr:hover,.data-table tbody tr:hover{background:#e7f8f1}.data-table tbody tr.selected-row,.data-table tbody tr.selected{background:#dff5ec;outline-color:#22C08A}
+.party-card{color:#0E1F1A}.party-card:hover{background:#e7f8f1}.party-card.active{background:#dff5ec;box-shadow:inset 3px 0 #22C08A}
+.party-card-open{background:transparent}.party-card-delete{border-color:#d9a99f;background:#fff3ef;color:#9b4d3e}.empty-state{border-color:rgba(31,74,60,.17)}.empty-state strong{color:#0E1F1A}
+.entry,.dashboardlist div{border-color:rgba(31,74,60,.14)}.taccount td,.taccount th{border-color:#72a793;background:#e7f8f1}.taccount td input{background:#fff}
+.taccount .gpresult td:nth-last-child(-n+2),.gpresults{background:#dff5ec}.gpresults span{color:#557067}.bartrack{background:#dcece6}.mainbar{background:#22C08A}.auditbar{background:#1F4A3C}
+.selfcell{background:#e8f2ee;color:#557067}.matrixamount{color:#0E1F1A}.matrixamount:hover{background:rgba(169,228,206,.3)}.dev-close,.dev-missing{background:#edf5f2;color:#557067}
+.stock-app .mismatch,.stock-app .dev-major{background:#f7dcd4!important}.stock-app .pending,.stock-app .dev-review{background:#f7edd3!important}
+#toast,.toast{border-color:#1F4A3C;background:#1F4A3C;color:#fff}.toast.error,#toast.error{border-color:#8D352F;background:#8D352F;color:#fff}dialog::backdrop,.credentials-dialog::backdrop{background:rgba(14,31,26,.48)}
+
+/* Surface contract: a component changes its background and foreground roles together. */
+[data-surface="light"]{--surface-bg:var(--light-bg);--surface-text:var(--light-text);--surface-muted:var(--light-muted);--surface-border:var(--light-border)}
+[data-surface="dark"]{--surface-bg:var(--dark-bg);--surface-text:var(--dark-text);--surface-muted:var(--dark-muted);--surface-border:var(--dark-border)}
+[data-surface="mint"]{--surface-bg:var(--mint-bg);--surface-text:var(--mint-text);--surface-muted:var(--mint-muted);--surface-border:var(--palette-secondary)}
+[data-surface]{background:var(--surface-bg);color:var(--surface-text);border-color:var(--surface-border)}
+[data-surface] .ui-title,[data-surface] .ui-value,[data-surface] .ui-label{color:var(--surface-text)}
+[data-surface] .ui-secondary{color:var(--surface-muted)}
+[data-surface] .ui-icon{color:inherit}
+.ui-input{background:var(--surface-bg);color:var(--surface-text);border:1px solid var(--surface-border)}
+.ui-input::placeholder{color:var(--surface-muted);opacity:1}
+.ui-button{background:var(--surface-bg);color:var(--surface-text);border-color:var(--surface-border)}
+.ui-button>.ui-label{color:inherit}.ui-button:disabled{opacity:1;cursor:not-allowed}
+.ui-button:focus-visible,.ui-input:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+
+/* Receivables: reference implementation for the semantic surface system. */
+.receivables-app .main{color:var(--light-text)}
+.receivables-app .sidebar{border-color:var(--dark-border);background:linear-gradient(180deg,var(--dark-bg),var(--dark-deep));color:var(--dark-text)}
+.receivables-app .sidebar .brand span,.receivables-app .sidebar-foot,.receivables-app .sidebar-foot span{color:var(--dark-muted)}
+.receivables-app .sidebar-foot{border-color:rgba(169,228,206,.24);background:rgba(14,31,26,.24)}
+.receivables-app .sidebar-foot b{color:var(--dark-text)}
+.receivables-app .nav button{color:var(--dark-muted)}
+.receivables-app .nav button:hover{background:rgba(169,228,206,.12);color:var(--dark-text)}
+.receivables-app .nav button.active{background:var(--palette-accent);color:var(--light-text);box-shadow:inset 3px 0 var(--palette-primary)}
+.receivables-app .btn{min-height:42px;border-color:var(--light-border);background:var(--light-bg);color:var(--palette-secondary)}
+.receivables-app .btn:hover{border-color:var(--palette-primary);background:#E7F8F1;color:var(--palette-secondary)}
+.receivables-app .btn.primary{border-color:var(--mint-bg);background:var(--mint-bg);color:var(--mint-text)}
+.receivables-app .btn.primary:hover{background:#1CA978;color:var(--mint-text)}
+.receivables-app .top-actions{flex-wrap:wrap;justify-content:flex-end}
+.receivables-app .metric{border-color:var(--light-border);background:var(--light-bg);color:var(--light-text);box-shadow:none}
+.receivables-app .metric .label,.receivables-app .metric .sub{color:var(--light-muted)}
+.receivables-app .metric.accent{border-color:var(--dark-border);background:linear-gradient(135deg,#285F4E,var(--dark-deep));color:var(--dark-text)}
+.receivables-app .metric.accent .label,.receivables-app .metric.accent .sub{color:var(--dark-muted)}
+.receivables-app .surface,.receivables-app .party-panel,.receivables-app .detail-panel{border-color:var(--light-border);background:var(--light-bg);color:var(--light-text)}
+.receivables-app .filters{align-items:end}
+.receivables-app .filter-field{display:grid;gap:6px;color:var(--light-text);font-size:12px;font-weight:750;text-transform:none;letter-spacing:0}
+.receivables-app .filter-label{color:var(--light-muted)}
+.receivables-app .filter-field svg{top:auto;bottom:12px;transform:none;color:var(--light-muted)}
+.receivables-app .input,.receivables-app .field input{border-color:var(--light-border);background:var(--light-bg);color:var(--light-text)}
+.receivables-app .input::placeholder,.receivables-app .field input::placeholder{color:#71877F;opacity:1}
+.receivables-app .field label{color:var(--light-muted)}
+.receivables-app .segments{border-color:var(--light-border);background:var(--canvas-bg)}
+.receivables-app .segments button{color:var(--light-muted)}
+.receivables-app .segments button.active{background:var(--palette-accent);color:var(--light-text)}
+.receivables-app .key-help,.receivables-app .clear-hint{color:var(--light-muted)}
+.receivables-app .key{border-color:var(--light-border);background:var(--neutral-bg);color:var(--neutral-text)}
+.receivables-app .table-scroll{background:var(--light-bg);scrollbar-color:#72B69D #E5F2ED}
+.receivables-app .data-table th,.receivables-app .mini-table th{background:#DFF5EC;color:var(--palette-secondary)}
+.receivables-app .data-table td,.receivables-app .mini-table td{color:var(--light-text);border-color:rgba(31,74,60,.14)}
+.receivables-app .data-table tbody tr:nth-child(even),.receivables-app .mini-table tbody tr:nth-child(even){background:#F7FCFA}
+.receivables-app .data-table tbody tr:hover,.receivables-app .mini-table tbody tr:hover{background:#E7F8F1}
+.receivables-app .data-table tbody tr.selected{background:#DFF5EC;box-shadow:inset 3px 0 var(--palette-primary)}
+.receivables-app .invoice-id,.receivables-app .party-name{color:var(--light-text)}
+.receivables-app .party-code,.receivables-app .combined-match,.receivables-app .combined-hint{color:var(--palette-secondary)}
+.receivables-app .days.overdue{color:var(--danger-text)}
+.receivables-app .row-action{border-color:#72B69D;background:#fff;color:var(--palette-secondary)}
+.receivables-app .row-action:hover,.receivables-app .row-action:focus,.receivables-app .data-table tr.selected .row-action{border-color:var(--palette-primary);background:#DFF5EC;color:var(--palette-secondary)}
+.receivables-app .empty{color:var(--light-muted)}.receivables-app .empty strong{color:var(--light-text)}
+.receivables-app .party-card{color:var(--light-text)}.receivables-app .party-card:hover{background:#E7F8F1}.receivables-app .party-card.active{background:#DFF5EC}
+.receivables-app .panel-heading p,.receivables-app .party-meta{color:var(--light-muted)}
+.receivables-app .modal{border-color:var(--light-border);background:var(--light-bg);color:var(--light-text);box-shadow:none}
+.receivables-app .modal-head{border-color:var(--light-border)}.receivables-app .close{color:var(--light-muted)}
+.receivables-app .confirm-note{color:var(--light-muted)}.receivables-app .confirm-grid{border-color:var(--light-border);background:var(--light-border)}
+.receivables-app .confirm-item{background:var(--light-bg)}.receivables-app .confirm-item span{color:var(--light-muted)}.receivables-app .confirm-item strong{color:var(--light-text)}
+.receivables-app .confirm-item.amount strong{color:var(--palette-secondary)}
+.receivables-app .detail-hero{border-color:var(--dark-border);background:linear-gradient(135deg,#285F4E,var(--dark-deep));color:var(--dark-text)}
+.receivables-app .detail-hero h2,.receivables-app .detail-hero strong{color:var(--dark-text)}
+.receivables-app .detail-hero .code,.receivables-app .detail-stats span{color:var(--dark-muted)}
+.receivables-app .detail-hero .btn{border-color:rgba(169,228,206,.52);background:rgba(14,31,26,.22);color:var(--dark-text)}
+.receivables-app .detail-hero .btn:hover{border-color:var(--palette-primary);background:rgba(169,228,206,.16);color:var(--dark-text)}
+
+/* Payables: light work surfaces, complete status pairs, and legible exception states. */
+.payables-app .topbar,.payables-app .sync-banner,.payables-app .exception-card,.payables-app .section-intro{border-color:var(--light-border);background:var(--light-bg);color:var(--light-text);box-shadow:var(--shadow)}
+.payables-app .topbar h1,.payables-app .sync-banner strong,.payables-app .exception-card strong,.payables-app .section-intro h2{color:var(--light-text)}
+.payables-app .sync-banner span,.payables-app .exception-card small,.payables-app .section-intro p:last-child{color:var(--light-muted)}
+.payables-app .metric-card{border-color:var(--light-border);background:var(--light-bg);color:var(--light-text);box-shadow:none}
+.payables-app .metric-card span,.payables-app .metric-card small{color:var(--light-muted)}
+.payables-app .metric-card.accent{border-color:var(--dark-border);background:linear-gradient(135deg,#285F4E,var(--dark-deep));color:var(--dark-text)}
+.payables-app .metric-card.accent span,.payables-app .metric-card.accent small{color:var(--dark-muted)}
+.payables-app .danger-card,.payables-app .danger-section{border-color:#D9A29D;background:var(--danger-bg);color:var(--danger-text)}
+.payables-app .danger-card strong,.payables-app .danger-card span,.payables-app .danger-card small,.payables-app .danger-section h2,.payables-app .danger-section p:last-child{color:var(--danger-text)}
+.payables-app .summary-strip{border-color:var(--light-border);background:var(--light-border)}
+.payables-app .summary-strip div{background:var(--light-bg);color:var(--light-text)}.payables-app .summary-strip span{color:var(--light-muted)}
+.payables-app .danger-summary{border-color:#D9A29D;background:#D9A29D}.payables-app .danger-summary div{background:var(--danger-bg);color:var(--danger-text)}.payables-app .danger-summary span{color:var(--danger-text)}
+.payables-app .panel,.payables-app .table-wrap{border-color:var(--light-border);background:var(--light-bg);color:var(--light-text)}
+.payables-app table{font-size:14px}.payables-app th{background:#DFF5EC;color:var(--palette-secondary);font-size:11px}.payables-app td{color:var(--light-text);border-color:rgba(31,74,60,.14)}
+.payables-app tbody tr:nth-child(even){background:#F7FCFA}.payables-app tbody tr:hover{background:#E7F8F1}
+.payables-app .party-cell small,.payables-app .empty-row{color:var(--light-muted);font-size:12px}.payables-app .pending-days{color:var(--palette-secondary)}
+.payables-app .category,.payables-app .status,.payables-app .credit-badge{border-color:#B6D0C6;background:var(--neutral-bg);color:var(--neutral-text);font-size:11px}
+.payables-app .credit-badge,.payables-app .status.paid{border-color:#9DD4BE;background:var(--success-bg);color:var(--success-text)}
+.payables-app .status.part-paid{border-color:#E4C77B;background:var(--warning-bg);color:var(--warning-text)}
+.payables-app .status.unpaid{border-color:#B6D0C6;background:var(--neutral-bg);color:var(--neutral-text)}
+.payables-app .row-actions button{border-color:var(--light-border);background:#fff;color:var(--palette-secondary);font-size:11px}
+.payables-app .row-actions button:hover{border-color:var(--palette-primary);background:#E7F8F1;color:var(--palette-secondary)}
+.payables-app .exception-row{background:#FFF5F3!important}.payables-app .exception-row:hover{background:#FDE9E6!important}
+
+/* Payment Tracker: one colour owner for topbars, controls, tables, and statuses. */
+.payment-app .topbar,.payment-app .daily-toolbar,.payment-app .filter-bar{border-color:var(--light-border);background:var(--light-bg);color:var(--light-text);box-shadow:var(--shadow)}
+.payment-app .topbar h1,.payment-app .session-user strong{color:var(--light-text)}.payment-app .session-user{color:var(--light-muted)}
+.payment-app .button.secondary,.payment-app .button.quiet{border-color:var(--light-border);background:#fff;color:var(--palette-secondary)}
+.payment-app .text-button{color:var(--palette-secondary)}
+.payment-app .date-navigator label{color:var(--light-muted);font-size:12px}
+.payment-app .date-navigator input[type=date]{border-color:var(--light-border);background:#fff;color:var(--light-text);color-scheme:light}
+.payment-app .date-navigator input[type=date]::-webkit-calendar-picker-indicator{background-color:var(--palette-accent)}
+.payment-app .icon-button{border-color:#72B69D;background:#fff;color:var(--palette-secondary);box-shadow:none}.payment-app .icon-button:hover{border-color:var(--palette-primary);background:#E7F8F1}
+.payment-app .metric-card{border-color:var(--light-border);background:var(--light-bg);color:var(--light-text);box-shadow:none}
+.payment-app .metric-card span,.payment-app .metric-card small{color:var(--light-muted)}
+.payment-app .metric-card.accent{border-color:var(--dark-border);background:linear-gradient(135deg,#285F4E,var(--dark-deep));color:var(--dark-text)}
+.payment-app .metric-card.accent span,.payment-app .metric-card.accent small,.payment-app .metric-card.accent strong{color:var(--dark-muted)}
+.payment-app .metric-card.accent strong{color:var(--dark-text)}
+.payment-app .panel,.payment-app .table-wrap{border-color:var(--light-border);background:var(--light-bg);color:var(--light-text)}
+.payment-app table{font-size:14px}.payment-app th{background:#DFF5EC;color:var(--palette-secondary);font-size:11px}.payment-app td{color:var(--light-text);border-color:rgba(31,74,60,.14)}
+.payment-app tbody tr:nth-child(even){background:#F7FCFA}.payment-app .table-wrap tbody tr:hover{background:#E7F8F1}
+.payment-app .party-cell small,.payment-app .empty-row{color:var(--light-muted);font-size:12px}
+.payment-app .status{border-color:#B6D0C6;font-size:11px}.payment-app .status.matched{border-color:#9DD4BE;background:var(--success-bg);color:var(--success-text)}
+.payment-app .status.shared_match{border-color:#AEBFE0;background:#EAF0FA;color:#294D82}.payment-app .status.needs_review{border-color:#E4C77B;background:var(--warning-bg);color:var(--warning-text)}
+.payment-app .status.unmatched,.payment-app .status.not_uploaded{border-color:#D9A29D;background:var(--danger-bg);color:var(--danger-text)}
+.payment-app .party-detail-hero{border-color:var(--dark-border);background:linear-gradient(135deg,#285F4E,var(--dark-deep));color:var(--dark-text)}
+.payment-app .party-detail-hero h2,.payment-app .party-detail-stat strong{color:var(--dark-text)}
+.payment-app .party-detail-hero .eyebrow,.payment-app .detail-code,.payment-app .party-detail-stat span{color:var(--dark-muted)}
+.payment-app .credentials-dialog{border-color:var(--light-border);background:#fff;color:var(--light-text)}.payment-app .dialog-heading{border-color:var(--light-border)}
+.payment-app .dialog-close{background:var(--neutral-bg);color:var(--neutral-text)}
+
+/* Remaining modules: keep their dark surfaces self-contained. */
+.invoice-app .sidebar .nav-label,.invoice-app .sidebar .session-user,.invoice-app .sidebar small{color:var(--dark-muted)}
+.invoice-app .sidebar .text-button{color:var(--dark-text)}.invoice-app .sidebar .text-button:hover{background:rgba(169,228,206,.12);color:#fff}
+.hub-app .dialog-actions #savePassword{border-color:var(--mint-bg);background:var(--mint-bg);color:var(--mint-text)}
+.hub-app .dialog-actions #savePassword:hover{background:#1CA978;color:var(--mint-text)}
+.hub-app .todo-project{border-color:rgba(34,192,138,.55);background:linear-gradient(100deg,#fff 0%,#f2fcf8 100%)}
+.hub-app .todo-project .project-number{background:var(--mint-bg);color:var(--mint-text)}
+.hub-app .todo-project .project-open{background:var(--dark-bg);color:var(--dark-text)}
+.stock-app>header small{color:var(--dark-muted)}.stock-app>header strong{color:var(--dark-text)}
+.stock-app nav button.active,.stock-app button.primary{border-color:var(--mint-bg);background:var(--mint-bg);color:var(--mint-text)}
+
+@media(max-width:720px){
+  .receivables-app .filters{grid-template-columns:1fr}
+  .receivables-app .top-actions{width:100%;justify-content:flex-start}
+  .receivables-app .top-actions .btn:not(.primary){display:inline-flex}
+}
+*{scrollbar-width:thin;scrollbar-color:#72b69d #e5f2ed}*::-webkit-scrollbar{width:10px;height:10px}*::-webkit-scrollbar-track{background:#e5f2ed;border-radius:999px}
+*::-webkit-scrollbar-thumb{border:2px solid #e5f2ed;border-radius:999px;background:#72b69d}*::-webkit-scrollbar-thumb:hover{background:#22C08A}*::-webkit-scrollbar-corner{background:#e5f2ed}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;}}
+
+/* Mint Glass — screen-only treatment, matching the To-do workspace.
+   Background artwork is static CSS; no network images or extra event handlers.
+   Blur is limited to large surfaces, never individual rows or input controls. */
+@media screen {
+  :root {
+    --glass-panel:rgba(255,255,255,.72);
+    --glass-card:rgba(255,255,255,.80);
+    --glass-border:rgba(255,255,255,.88);
+    --glass-shadow:0 1px 3px rgba(31,74,60,.09),inset 0 1px 0 rgba(255,255,255,.94);
+  }
+  body:is(.suite-login-app,.hub-app,.receivables-app,.payables-app,.payment-app,.invoice-app,.stock-app) {
+    background-color:#E6F4ED;
+    background-image:
+      radial-gradient(circle at 87% 4%,rgba(255,255,255,.27) 0 155px,rgba(255,255,255,.7) 156px,transparent 158px),
+      radial-gradient(circle at 9% 96%,rgba(255,255,255,.2) 0 115px,rgba(255,255,255,.55) 116px,transparent 118px),
+      radial-gradient(ellipse at 12% 14%,rgba(255,255,255,.96),transparent 44%),
+      radial-gradient(ellipse at 93% 9%,rgba(34,192,138,.29),transparent 48%),
+      radial-gradient(ellipse at 74% 100%,rgba(31,74,60,.16),transparent 48%),
+      linear-gradient(140deg,#D8F3E8 0%,#F5FBF8 46%,#C6EADC 100%);
+    background-attachment:fixed;
+    color:#0E1F1A;
+  }
+
+  /* Major light surfaces: bright edges, soft depth, a subtle view of the backdrop. */
+  .hub-app :is(.welcome-bar,.projects-panel,.task-cleanup,.calendar-panel),
+  .suite-login-app .login-card,
+  .receivables-app :is(.surface,.party-panel,.detail-panel),
+  .payables-app :is(.topbar,.panel,.filter-bar,.sync-banner,.section-intro):not(.danger-section),
+  .payment-app :is(.topbar,.panel,.filter-bar,.daily-toolbar),
+  .invoice-app :is(.workspace-card,.auth-card),
+  .stock-app :is(.panel,.card) {
+    border-color:var(--glass-border);
+    background:var(--glass-panel);
+    color:#0E1F1A;
+    box-shadow:var(--glass-shadow);
+    
+    
+  }
+  .suite-login-app .login-card {border-radius:26px;background:rgba(255,255,255,.76);box-shadow:inset 0 1px 0 #fff}
+  .suite-login-app .module-list span {background:rgba(255,255,255,.5);border-color:rgba(31,74,60,.18)}
+  .hub-app :is(.projects-panel,.task-cleanup,.calendar-panel) {border-radius:24px}
+  .stock-app :is(.card,.panel) {border-radius:18px}
+
+  /* Inner cards have no extra blur layers, keeping long lists inexpensive. */
+  .hub-app .project-card,
+  .receivables-app .metric:not(.accent),
+  :is(.payables-app,.payment-app) .metric-card:not(.accent),
+  .payment-app .party-list-card,
+  .invoice-app .category-button {
+    border-color:rgba(255,255,255,.94);
+    background:var(--glass-card);
+    color:#0E1F1A;
+    box-shadow:inset 0 1px 0 #fff;
+  }
+  .hub-app .project-card:is(:hover,:focus-visible),
+  .payment-app .party-list-card:hover {
+    background:rgba(255,255,255,.96);
+    border-color:#72B69D;
+  }
+  .hub-app .todo-project {background:linear-gradient(110deg,rgba(255,255,255,.9),rgba(169,228,206,.4));border-color:rgba(34,192,138,.38)}
+  .invoice-app .category-button.active {background:#DFF5EC;border-color:#72B69D}
+
+  /* Deep green glass retains a complete, high-contrast text colour pairing. */
+  :is(.receivables-app,.payables-app,.payment-app,.invoice-app) .sidebar,
+  .stock-app > header {
+    background:linear-gradient(160deg,rgba(31,74,60,.96),rgba(18,56,45,.94));
+    color:#EAF8F3;
+    border-color:rgba(169,228,206,.35);
+    box-shadow:inset -1px 0 0 rgba(255,255,255,.08);
+    
+    
+  }
+  .receivables-app .metric.accent,
+  :is(.payables-app,.payment-app) .metric-card.accent,
+  .receivables-app .detail-hero,.payment-app .party-detail-hero {
+    background:linear-gradient(135deg,#2B6552,#173E32);
+    color:#EAF8F3;
+    border-color:#729B89;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.18);
+  }
+
+  /* Stable reading and editing surfaces over the decorative background. */
+  :is(.payables-app,.payment-app) .table-wrap,
+  .receivables-app .table-scroll,
+  .invoice-app .table-region,
+  .stock-app :is(.transfermatrix,.taccount,.dashboardtable) {
+    background:rgba(255,255,255,.96);
+  }
+  .hub-app .today-task-row {background:rgba(255,255,255,.84)}
+  .hub-app .calendar-day:not(.selected):not(.today) {border-color:rgba(31,74,60,.12)}
+  body:is(.suite-login-app,.hub-app,.receivables-app,.payables-app,.payment-app,.invoice-app,.stock-app) :is(input,textarea,select) {
+    background-color:#fff;
+    color:#0E1F1A;
+    border-color:#9FBBAE;
+  }
+  body:is(.suite-login-app,.hub-app,.receivables-app,.payables-app,.payment-app,.invoice-app,.stock-app) :is(input,textarea,select):focus {
+    border-color:#1F4A3C;
+    box-shadow:0 0 0 3px rgba(34,192,138,.19);
+  }
+  :is(.hub-app,.receivables-app,.payables-app,.payment-app,.invoice-app,.stock-app) :is(dialog,.modal) {
+    background:#F8FCFA;
+    color:#0E1F1A;
+    border-color:#CADBD3;
+    box-shadow:none;
+  }
+  :root {--glass-panel:#F5FAF7;--glass-card:#fff}
+  .suite-login-app .login-card {background:#F5FAF7}
+  @media (prefers-reduced-transparency:reduce), (forced-colors:active) {
+    :root {--glass-panel:#F5FAF7;--glass-card:#fff}
+    body:is(.suite-login-app,.hub-app,.receivables-app,.payables-app,.payment-app,.invoice-app,.stock-app) {background-image:none}
+    .suite-login-app .login-card {background:#F5FAF7}
+    :is(.welcome-bar,.projects-panel,.task-cleanup,.calendar-panel,.login-card,.surface,.party-panel,.detail-panel,.topbar,.panel,.filter-bar,.sync-banner,.section-intro,.daily-toolbar,.workspace-card,.auth-card,.card,.sidebar) {}
+  }
+}

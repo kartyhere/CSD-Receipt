@@ -7,13 +7,16 @@ const { app, BrowserWindow, dialog, ipcMain, safeStorage, session, shell } = req
 const { execFile } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
-const { pathToFileURL } = require('node:url');
+const { pageOf } = require('./pages.cjs');
 const Layout = require('./layout.js');
 const { fontOk } = require('./fonts.cjs');
 
 const HISTORY_MAX = 1000;
 const SHEET_CSS = fs.readFileSync(path.join(__dirname, 'sheet.css'), 'utf8');
-const PAGE = pathToFileURL(path.join(__dirname, 'index.html')).href;
+// Which file a page address points to, relative to src/ (the same check BOH uses). Comparing file paths instead of the
+// address text matters on Windows: the portable .exe runs from the temp folder, whose address can be written differently
+// (short names like KARTHI~1, letter case, escaping) from the one built here, and 1.0.0-1.0.2 then refused every request.
+const isOurPage = (url) => pageOf(url, __dirname) === 'index.html';
 // Only when run from source (never in the packaged app): write a PDF instead of printing, and stand in another font
 // for Courier New (the Linux test machine has no Courier New), for the automatic checks.
 const testHook = (name) => (app.isPackaged ? '' : String(process.env[name] || ''));
@@ -101,7 +104,7 @@ async function listPrinters() {
 // ---- messages from the window: only from our own page in our own window ----
 function handle(channel, fn) {
   ipcMain.handle(channel, async (event, payload) => {
-    if (!win || win.isDestroyed() || event.sender !== win.webContents || event.senderFrame !== event.sender.mainFrame || event.senderFrame.url !== PAGE) throw new Error('This window is not allowed to do that.');
+    if (!win || win.isDestroyed() || event.sender !== win.webContents || event.senderFrame !== event.sender.mainFrame || !isOurPage(event.senderFrame.url)) throw new Error('This window is not allowed to do that.');
     if (payload !== undefined && (payload === null || typeof payload !== 'object' || Array.isArray(payload))) throw new Error('Unexpected request.');
     return fn(payload);
   });
@@ -182,7 +185,7 @@ else {
   app.on('second-instance', createWindow);
   // No other pages, windows, downloads, permissions or web requests: the app only shows its own page.
   app.on('web-contents-created', (_e, contents) => {
-    contents.on('will-navigate', (ev, url) => { if (url !== PAGE) ev.preventDefault(); });
+    contents.on('will-navigate', (ev, url) => { if (!isOurPage(url)) ev.preventDefault(); });
     contents.on('will-attach-webview', (ev) => ev.preventDefault());
     contents.setWindowOpenHandler(({ url }) => { if (/^https:\/\//.test(url)) shell.openExternal(url); return { action: 'deny' }; });
   });

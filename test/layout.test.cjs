@@ -63,6 +63,9 @@ test('the app only takes messages from its own page, prints silently with the ch
   assert.match(m, /javascript: false/); assert.match(m, /setPermissionRequestHandler\(\(_wc, _perm, cb\) => cb\(false\)\)/);
   assert.match(m, /history\.unshift\(\{ at: new Date\(\)\.toISOString\(\), po: e\.po, sr: e\.sr, date: e\.date/);
   assert.match(m, /safeStorage\.encryptString/);
+  // Own data folder, %APPDATA%\CSD Receipt, set in the code (not left to Electron's default name).
+  assert.match(m, /const DATA_FOLDER = 'CSD Receipt';/); assert.match(m, /app\.setPath\('userData', path\.join\(app\.getPath\('appData'\), DATA_FOLDER\)\)/);
+  assert.match(m, /path\.join\(app\.getPath\('userData'\), 'csd-receipt\.dat'\)/);
   const app = read('src/app.js');
   assert.match(app, /\$\('poInput'\)\.value = ''; \$\('srInput'\)\.value = '';/);   // ready for the next numbers
   assert.ok(!/\bon(click|change|input|keydown)=/.test(read('src/index.html')));

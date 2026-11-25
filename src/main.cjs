@@ -27,6 +27,10 @@ const DIALOG = '__windows_dialog__';
 const FONT_MISSING = 'Courier New Bold is not installed on this computer, so nothing was printed. Install the Courier New font in Windows (Settings > Fonts) and try again.';
 
 let win = null; let data = null;
+// CSD Receipt's own data folder, %APPDATA%\CSD Receipt, always: not BOH's, and not a different one when run from source.
+// (The window test points it at a throw-away folder first and sets CSDRECEIPT_TEST_PROFILE.)
+const DATA_FOLDER = 'CSD Receipt';
+if (!testHook('CSDRECEIPT_TEST_PROFILE')) { app.setName(DATA_FOLDER); app.setPath('userData', path.join(app.getPath('appData'), DATA_FOLDER)); }
 const dataFile = () => path.join(app.getPath('userData'), 'csd-receipt.dat');
 
 // ---- storage ----
@@ -110,7 +114,7 @@ function handle(channel, fn) {
   });
 }
 function registerHandlers() {
-  handle('csd:load', () => { const d = load(); return { gst: d.gst, date: d.date, printer: d.printer, history: d.history.slice(0, 200), version: require('../package.json').version }; });
+  handle('csd:load', () => { const d = load(); return { gst: d.gst, date: d.date, printer: d.printer, history: d.history.slice(0, 200), version: require('../package.json').version, dataFile: dataFile() }; });
   handle('csd:save-settings', (p) => {
     const d = load(), gst = Layout.cleanGst(p?.gst);
     if (p && 'gst' in p) { if (!Layout.gstOk(gst)) throw new Error('The GST number must be 15 letters and digits, starting with the 2-digit state code.'); d.gst = gst; }

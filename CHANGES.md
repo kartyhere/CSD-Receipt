@@ -1,3 +1,10 @@
+# 1.0.5 — Own data folder, set in the code and shown in the window
+
+- Karthik asked that CSD Receipt has its own database. It already kept everything in its own file, separate from BOH: `%APPDATA%\CSD Receipt\csd-receipt.dat`, sealed with Windows' protection, holding the GST number, last date, last printer and the Printed list.
+- The folder name used to come from an Electron default, so a run from source would have used a different folder (`csd-receipt`). It is now set in the code: always `%APPDATA%\CSD Receipt`, never BOH's folder.
+- The sidebar shows where the data file is ("Data file").
+- Checked by running: unit tests, the window test (data file shown), and a plain run from source (data folder "CSD Receipt"). Not checked: the .exe on Windows.
+
 # 1.0.4 — Test fix for the Windows build
 
 - The 1.0.3 build stopped at the tests. One check used Linux-style paths (`/home/...`), which mean nothing on the Windows build machine. That check now says it is Linux-style. The Windows-style address checks passed there, on real Windows.

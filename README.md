@@ -35,7 +35,7 @@ The .exe is mostly Electron (Chromium and Node). The app's own code is about 45 
 
 ## Where things are kept
 
-`%APPDATA%\CSD Receipt\csd-receipt.dat` holds the GST number, last PO date, last printer and the Printed list. It is sealed with Windows' own protection (Electron safeStorage). The GST number is never written to the Printed list or into the PDF's file details. Nothing is sent anywhere: the app blocks every web request, permission, download and new window.
+`%APPDATA%\CSD Receipt\csd-receipt.dat` (shown in the sidebar under Data file) is CSD Receipt's own data file, separate from BOH. It holds the GST number, last PO date, last printer and the Printed list. It is sealed with Windows' own protection (Electron safeStorage). The GST number is never written to the Printed list or into the PDF's file details. Nothing is sent anywhere: the app blocks every web request, permission, download and new window.
 
 ## Build and test
 

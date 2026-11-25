@@ -146,6 +146,7 @@
       const d = await api.load();
       $('gstInput').value = d.gst || ''; $('dateInput').value = d.date || today(); savedPrinter = d.printer || ''; history = d.history || [];
       $('versionNote').textContent = d.version ? `Version ${d.version}` : '';
+      $('dataNote').textContent = d.dataFile || ''; $('dataNote').title = d.dataFile || '';
     } catch (e) { $('dateInput').value = today(); toast(errorText(e), true); }
     renderPrinted(); renderPreview();
     // Courier New must be on this computer; otherwise printing is refused and this says why.

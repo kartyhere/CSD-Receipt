@@ -12,6 +12,7 @@ process.env.CSDRECEIPT_TEST_PDF_DIR = out;
 // This Linux test machine has no Courier New: Liberation Mono (same widths) stands in, and the font check expects it.
 process.env.CSDRECEIPT_TEST_NO_PRINTERS = '1'; // like Karthik's PC: Electron's list comes back empty
 process.env.CSDRECEIPT_TEST_FONT = 'Liberation Mono'; process.env.CSDRECEIPT_TEST_FONT_PS = 'LiberationMono';
+process.env.CSDRECEIPT_TEST_PROFILE = '1'; // keep the throw-away profile below instead of %APPDATA%\CSD Receipt
 app.setPath('userData', profile);
 const errors = [];
 app.on('web-contents-created', (_, c) => { c.on('console-message', (d) => { if (d.level === 'error' || d.level === 3) errors.push(d.message); }); });
@@ -33,6 +34,7 @@ const GST = '32ZZZPZ0000Z1Z0'; // obviously fake
 
   await waitFor(() => js(`document.getElementById('fontWarning').hidden`));     // font found: no warning
   // First use: no GST number yet, so the GST box has the focus. Enter moves box to box.
+  assert.equal(await js(`document.getElementById('dataNote').textContent`), path.join(profile, 'csd-receipt.dat'));
   assert.equal(await active(), 'gstInput');
   await type(GST.toLowerCase()); key('Return'); await wait(80);                 // typed in lower case: stored upper case
   assert.equal(await active(), 'poInput'); await type('70289'); key('Return'); await wait(80);

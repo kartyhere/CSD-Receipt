@@ -43,3 +43,5 @@
 .csd-top-actions{display:flex;align-items:center;gap:14px}
 .version-note{font-size:11px;opacity:.75}
 .sidebar .brand img.brand-mark{display:block;flex:0 0 auto}
+.data-note-label{margin-top:8px;font-size:11px;font-weight:700}
+.data-note{font-family:"Geist Mono",Consolas,monospace;font-size:10.5px;line-height:1.4;overflow-wrap:anywhere;opacity:.8}

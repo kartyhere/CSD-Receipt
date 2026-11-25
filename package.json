@@ -1,6 +1,6 @@
 {
   "name": "csd-receipt",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Prints the GST number, PO number, SR number and PO date on the CSD page, one after another",
   "main": "src/main.cjs",
   "author": "Karthik",

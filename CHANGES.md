@@ -1,3 +1,9 @@
+# 1.0.4 — Test fix for the Windows build
+
+- The 1.0.3 build stopped at the tests. One check used Linux-style paths (`/home/...`), which mean nothing on the Windows build machine. That check now says it is Linux-style. The Windows-style address checks passed there, on real Windows.
+- App code is the same as 1.0.3.
+- From now on changes are pushed without asking (Karthik's instruction; CLAUDE.md updated).
+
 # 1.0.3 — Fix: "This window is not allowed to do that"
 
 - Karthik's 1.0.1 .exe showed "This window is not allowed to do that." when printing. The app checks that every request comes from its own page. 1.0.0–1.0.2 compared the page address as text with an address built by the app. The portable .exe runs from the Windows temp folder, and there the two can be written differently (short names like `KARTHI~1`, letter case, escaping). Every request was then refused: printing, and also reading the printer list. So the earlier "No printer found" most likely had the same cause.

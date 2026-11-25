@@ -22,7 +22,7 @@ Read `README.md` first (how it works, the page layout, build and test) and `CHAN
 5. `LANG=C.UTF-8 CSD_OUT=/tmp/csdr xvfb-run -a node_modules/.bin/electron --no-sandbox --disable-gpu test/app-electron-smoke.cjs` must print PASS.
 6. Zip: `cd /home/claude/csd-receipt && zip -qr ../CSD-Receipt-<ver>-Source.zip . -x "node_modules/*" -x ".git/*" -x "dist/*"` and send it.
 7. Report briefly: what changed, interpretations, what was run versus not checked (real printer, packaged Windows app).
-8. Ask before pushing ("Push to main" / "Not yet"). A push builds the Windows .exe on GitHub Actions.
+8. Push to `main` without asking (Karthik, 25 Nov 2026: asking only slows the work). A push builds the Windows .exe on GitHub Actions; check the run finished and report the .exe. If the run fails, fix it and push again.
 
 ## Look
 - The window uses BOH's shared project look, copied unchanged into `src/` (see `DESIGN-LANGUAGE.txt`): `shell.css`, `uniform-green-theme.css`, `suite-motion.css`, `suite-icons.css`, `suite-polish.css`, `appearance.js`, `fonts/`. Do not edit the copies; CSD Receipt's own rules go in `src/styles.css`. Re-copy from BOH only if Karthik asks.

@@ -81,7 +81,8 @@ test('the app recognises its own page by file path, however Windows writes the a
   assert.equal(pageOf('file:///C:/Users/x/evil/index.html', root, w), '');
   assert.equal(pageOf('file:///C:/Users/KARTHI~1/AppData/Local/Temp/2abc/resources/app.asar/src/index.html?x=1', root, w), '');
   assert.equal(pageOf('https://example.com/index.html', root, w), '');
-  assert.equal(pageOf('file:///home/u/app/src/index.html', '/home/u/app/src'), 'index.html');
-  assert.equal(pageOf('file:///home/u/app/src/../other/index.html', '/home/u/app/src'), '');
+  const x = path.posix; // Linux-style paths, whatever machine runs the test
+  assert.equal(pageOf('file:///home/u/app/src/index.html', '/home/u/app/src', x), 'index.html');
+  assert.equal(pageOf('file:///home/u/app/src/../other/index.html', '/home/u/app/src', x), '');
   assert.doesNotMatch(read('src/main.cjs'), /senderFrame\.url !== PAGE/);
 });

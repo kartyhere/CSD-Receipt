@@ -1,3 +1,9 @@
+# 1.0.6 — New logo: CSD
+
+- Karthik chose logo C out of four options: the letters CSD in bold monospace on BOH's dark green (#0E3B2E), with a mint (#3FDC9F) underline.
+- Used for the app icon (.exe, taskbar, window) in `build/icon.ico` (16 to 256 px) and in the sidebar (`src/icon.png`). At 32 px and below the letters are drawn larger so they stay readable.
+- The letters are drawn as an image (Liberation Mono Bold, since this machine has no Courier New), so the icon looks the same on every PC. The printed page is unchanged.
+
 # 1.0.5 — Own data folder, set in the code and shown in the window
 
 - Karthik asked that CSD Receipt has its own database. It already kept everything in its own file, separate from BOH: `%APPDATA%\CSD Receipt\csd-receipt.dat`, sealed with Windows' protection, holding the GST number, last date, last printer and the Printed list.
